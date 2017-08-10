@@ -1,0 +1,32 @@
+rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key 
+
+
+wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+
+
+yum install jenkins   (output Installed:  jenkins.noarch 0:2.60.2-1.1)
+
+
+java-version 
+yum install java-1.8.0-openjdk.x86_64
+
+ cp /etc/profile /etc/profile_backup
+  echo 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk' | sudo tee -a /etc/profile
+echo 'export JRE_HOME=/usr/lib/jvm/jre' | sudo tee -a /etc/profile
+  source /etc/profile
+ service jenkins status
+ service iptables status
+  service jenkins start
+ ip addr
+  cd /var/lib/jenkins/secrets/initialAdminPassword
+ cd /var/lib/jenkins/secrets
+  ls
+  vi initialAdminPassword
+
+
+find / -name jenkins
+
+
+
+26d7d504cb8f4b21bf00c087ef729ec2 
+
