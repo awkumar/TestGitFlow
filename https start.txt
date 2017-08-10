@@ -1,0 +1,38 @@
+
+******** it makes httpd to start working 
+chcon -R -t httpd_sys_content_rw_t /data/svn/repo1/*  
+
+
+service httpd status
+
+service httpd start
+
+service cntlmd start
+
+service iptables stop
+service jenkins start
+lsof -i:3030
+
+http://10.83.4.235/repo1/Trunk
+
+10.83.4.239
+
+dashing start
+
+dashing start -p 3030 -d
+
+cd sweet_dashboard_project
+
+***** ps -ef | grep dashing
+****************************RUN STEP*********
+go to 
+
+cd dashing/sweet_dashboard_project
+
+dashing start -p 3030 -d
+
+(((if error  check vi Gemfile
+ in that folder)))
+
+
+
