@@ -1,0 +1,40 @@
+---
+ - name:  install  httpd and start service
+   hosts:   webserver
+   vars:
+     web_pkg: htpd
+     firewall_pkg: firewalld
+     web_service: httpd
+     firewall_service: firewalld
+     rule: http
+   tasks:
+     - name: install  packages
+       yum:
+         name:
+            - "{{ web_pkg }}"
+            - "{{ firewall_pkg }}"
+         state: latest
+     - name:  start   firewall service
+       service:
+          name: "{{ firewall_service }}"
+          enabled: true
+          state: started
+     - name:  start  httpd service
+       service:
+           name: "{{ web_service }}"
+           enabled: true
+           state: started
+     - name: create  sample file
+       copy:
+          content:  "this is test  page"
+          dest: /var/www/html/index.html
+     - name:   Add  http in firewall
+       firewalld:
+          service:    "{{ rule }}"
+          permanent: true
+          immediate: true
+          state: enabled
+
+   
+
+  

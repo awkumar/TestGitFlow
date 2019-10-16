@@ -1,0 +1,24 @@
+
+inventoty  -i 
+command line and 
+how to install pacakage install 
+with_item use
+
+Ansible tower 
+Ansible galaxy 
+how to see process id running --- netstat -tunlp, ps -f 
+sed and awk 
+
+roles in ansible
+
+how to use ansbile without ssh connection -->> beacome_ask_pass -k 
+command line option
+
+1)cmp and comm
+2)Splunk 
+3)Jenkins Best Practices  --authenticating , security , policy like Aactive directory 
+4) how to deploy a application by Ansible  playbook 
+5) What is Jenkins Pipeline ? delivery pipeline
+6)master and slave -- how many slave do you have and what to configure in master and what in slaves 
+7) what do you configure in NAGIOS and How do you configure those.
+8)What is a JenkinsFile?

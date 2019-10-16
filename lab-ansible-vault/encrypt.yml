@@ -1,0 +1,8 @@
+---
+ - name: encrypt  disk on serverb
+   hosts: prodservers
+   remote_user: devops
+   become: yes
+   roles:
+     - role:  encryptdisk
+       addkey: yes
