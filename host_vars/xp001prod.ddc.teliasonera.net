@@ -1,0 +1,149 @@
+isProduction: true
+
+# Version related variables
+application_version: 1830
+
+# Common variables 
+base_root: /opt/xpris
+base_folder: '{{base_root}}'
+
+miljo: prod
+# Centrex rapporter
+userID: XPRIS
+userPasswd: thekey
+
+# ---------- XPRIS SYSTEM CONNECTIONS ----------
+nebi_user: xpris
+nebi_pwd: Zx99Hkd2
+nebi_destination_to: nfprodc
+nebi_wsdl_path: kicore/nebi/wsdl/B2BL_NeBI2.0_Natfraga_v1.2_b2bext.teliasonera.com.wsdl
+NEBI:
+  cert_url: b2bext.teliasonera.com
+  cert_port: 19523
+
+# ---------- JAVA_RELATED VARIABLES ------------
+java_home: "{{ base_root }}/java/current"
+
+APIMARKET:
+  cert_url: apimarket.telia.se
+  cert_port: 8243
+
+# Here are variables related to the JBoss Wildfly installation
+ws_backend_server: '{{ ansible_nodename }}'
+ws_backend_port: 13756
+jboss_http_port: '{{ws_backend_port}}'
+tuxedo_backend_server: '{{ ansible_nodename }}'
+
+# ---------- DATABASE VARIABLES ------------
+db_hostname: xp001xprisdbprd.ddc.teliasonera.net
+db_port: 1521
+db_sid: XBAS
+db_user: XPRIS
+db_pwd: oraxpris
+
+db_st_user: XPRISST
+db_st_pwd: oraxpris
+
+# ---------- LOKUS VARIABLES------------
+lobas_miljo: 
+
+# ---------- PSA (old TAD-P) VARIABLES------------
+ipmstadp: Y
+ebstadp: Y
+gesburlp: http://mw500eop1.ddc.teliasonera.net:63128/
+gesbuserp: foxpris_gesb
+gesbpwdp: trevAXufR4yucR
+
+
+# ---------- EAI (old TAD-N) VARIABLES------------
+ipmsegi: Y
+gesburl: http://sews.teliacompany.net:63291
+gesbuser: xpris
+gesbpwd: XXXX
+
+
+UBB_TEMPLATE: ubb.tuxtcn.prod.j2
+DMCONFIG_TEMPLATE: dmconfig.tuxtcn.prod.j2
+INTERFACES_TEMPLATE: interfaces.prod.j2
+SQLHOSTS_TEMPLATE: sqlhosts.prod.j2
+
+
+# ---------- TADN VARIABLES------------
+ipmsegi: N
+gesburl: http://mw500eot1.ddc.teliasonera.net:61286/
+gesbuser: xpris_gesb
+gesbpwd: tadn123
+
+# ---------- COMMON TUXEDO VARIABLES------------
+ipckey: 163101
+ubbLmid: XPR
+UBB_UID: 4517
+UBB_GID: 4850
+ubbDomainid: XPRPROD
+mMachine: '{{ ansible_nodename }}'
+ubbMachines: '{{ ansible_nodename }}'
+
+UBB_MAXACCESSERS: 2500
+UBB_MAXWSCLIENTS: 1000
+
+
+jsl_port_listen: 14312
+jsl_port_start: 14313
+jsl_port_end: 14328
+
+ubbLokTop: XPR_RLOK_TOPP
+ubbToppUser: TOPPLOK
+ubbToppPass: TOPPLOK
+
+bolag_F: FG
+bolag_F_prefix: F
+bolag_F_D: XPR_RLOK_FG
+bolag_F_user: LOKSP
+bolag_F_pwd: LOKFG
+
+bolag_P: PC
+bolag_P_prefix: P
+bolag_P_D: XPR_RLOK_PC
+bolag_P_user: LOKSP
+bolag_P_pwd: LOKPC
+
+bolag_M: MC
+bolag_M_prefix: M
+bolag_M_D: XPR_RLOK_MC
+bolag_M_user: LOKSP
+bolag_M_pwd: LOKMC
+
+bolag_N: NA
+bolag_N_prefix: N
+bolag_N_D: XPR_RLOK_NA
+bolag_N_user: LOKSP
+bolag_N_pwd: LOKNA
+
+ubbLokcfd: LOK_CFD
+ubbLokcfdUser: CFDADM 
+ubbLokcfdPass: MASTER
+
+xpris_tnsnames_entry: '{{db_sid}}'
+
+xprisAuthSID: '{{db_sid}}'
+xprisAuthUser: '{{db_st_user}}'
+xprisAuthPass: '{{db_st_pwd}}'
+
+xprisDbHost: '{{db_hostname}}'
+xprisDbPort: '{{db_port}}'
+xprisDbSID: '{{db_sid}}'
+xprisDbUser: '{{db_user}}'
+xprisDbPass: '{{db_pwd}}'
+
+sybClopt: -A -r -e {{base_folder}}/domains/tuxtcn/log/stderr -- -S SIMBASE -U xpsamb -P fo00pris -D fovo -O dbo -a fo -M FRONTOFF
+
+nmsClopt: -A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -S NMS -Uxpris -Pxprisxpris -D xpris -O dbo -A fo -M {{ubbMachines}}
+
+jslClopt: -r -e {{base_folder}}/domains/tuxtcn/log/stderr -- -n //{{ ansible_nodename }}:14312 -d /dev/tcp -m 4 -M 16 -x 50 -p 14313 -P 14328   
+
+BOLAG_TEMPLATE: bolag.cfg.prod.j2
+
+app_user: xpris
+app_group: xpris
+
+TCN_PORT_HTTP: 13756

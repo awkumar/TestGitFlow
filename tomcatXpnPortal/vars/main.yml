@@ -1,0 +1,26 @@
+
+domain_root: "{{base_folder}}/domains/tomxpnportal"
+
+XPNPORTAL_PORT_HTTP: 8080
+XPNPORTAL_PORT_HTTPS: 8443
+XPNPORTAL_PORT_AJP: 8009
+XPNPORTAL_PORT_SHUTDOWN: 8005
+
+# New related to environments.xml.j2 (environments.xml)
+
+utv11_branch: 18.2.0
+utv12_branch: 18.1.1
+utv13_branch: 18.3.0
+test11_branch: 18.2.0
+test12_branch: 18.1.1
+test13_branch: 18.3.0
+itest_branch: 18.3.0
+forv_branch: 18.2.0
+
+utv12_tcn_version: tcn
+utv13_tcn_version: tcn
+test11_tcn_version: tcn
+test12_tcn_version: tcn
+test13_tcn_version: tcn
+itest_tcn_version: 
+forv_tcn_version: 

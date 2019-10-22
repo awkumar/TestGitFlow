@@ -1,0 +1,12 @@
+svn_repo: http://xp001xprissvn.ddc.teliasonera.net/svn/branches/17.2.1/Tuxedo
+svn_user: Frja08
+svn_pass: Frja08
+
+oracle_path: oracle/product/12.1.0/client_1
+oracle_sid: xbasttst
+
+fouser: foadm
+fourl: fo001foutv1.ddc.teliasonera.net
+
+mimer_path: mimer/MimerSQL-10.1.3A
+tuxedo_path: oratux_home/tuxedo12.2.2.0.0

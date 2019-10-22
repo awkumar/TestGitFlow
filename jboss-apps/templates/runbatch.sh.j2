@@ -1,0 +1,10 @@
+#!/bin/bash
+# Supply input argument environment.
+if [ $# -lt 1  ]; then
+  echo
+  echo " Usage `basename $0` <batchname>"
+  echo
+  exit 0
+fi
+BATCH_NAME=$1
+/usr/bin/curl -s http://{{ws_backend_server}}:{{ws_backend_port}}/xpnproxy/batch/runbatch.jsp?batchName=${BATCH_NAME}

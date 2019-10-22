@@ -1,0 +1,169 @@
+-------------------------------------------------------------------------------
+--
+--  sqlhosts
+--
+--  This file contains a list of all accessible local and remote databases
+--  on a node.
+--
+--  In a VAX/VMS environment the file is placed in the directory MIMLIB7.
+--  On UNIX and PC the file is stored in /etc.
+--
+--  On VAX/VMS the database can be specified by setting the logical name
+--  MIMER_DATABASE to the name of the database. On UNIX and PC an
+--  environment symbol MIMER_DATABASE is set to the name of the database.
+--
+-------------------------------------------------------------------------------
+--
+--  DEFAULT is the database used if MIMER_DATABASE is not found.
+--  Can be a defined local or remote database name.
+--
+--      DATABASE
+--      --------
+DEFAULT:
+        LOK_FFU
+-------------------------------------------------------------------------------
+--
+--  LOCAL is a list of all local databases on the current node.
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+LOCAL:
+        SINGLE          .
+        single          .
+--
+--  VAX/VMS examples
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+--      PRODUCTION      DISK:<DIRECTORY>
+--
+--  UNIX examples
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+--      multi1          /usr/multi1/multi
+--      HOTELDB         /usr/multi1/multi
+--      muldev          /usr/muldev/multi:/opt/db_dir
+-------------------------------------------------------------------------------
+--
+--  REMOTE is a list of all remote databases. The following examples are the
+--  same on both VAX/VMS and UNIX. The only difference is that a
+--  UNIX system does not support DECNET.
+--
+--  Interface and service may de defaulted. Default is chosen by entering ''.
+--  Default depends on protocol and the machine used.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+REMOTE:
+
+--
+--  DECNET examples:
+--      INTERFACE is currently ignored. $QIO is always used.
+--
+--      SERVICE corresponds to NCP object or command procedure used by
+--      network server.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+--      PRODUCTION      ODEN    DECNET   ''             MIMER
+--      INVENTORY       INV     DECNET   ''             ''
+--
+--  TCP/IP examples
+--      INTERFACE is the TCP/IP product used on VAX/VMS. On UNIX this
+--      signifies which network interface to use, such as socket interface,
+--      X/OPENs transport interface (xti) or OSI transport layer interface
+--      (tli).
+--
+--      SERVICE corresponds to the port number used in TCP/IP. The port
+--      number may either be a number or a name of a service stored in
+--      /etc/services.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+--      VAX_TEST        oden    tcp      wollongong     mimer
+--      DIAB_DEMO       ds90    tcp      tli            1360
+--      HP_TEST         hp      tcp      xti            mimer
+--      SUN_SERVER      solen   tcp      socket         mimer
+--      IBM_DB          rs6000  tcp      ''             mimer
+        LOK_TFU1        kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_FU1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_MU1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_PU1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_NU1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_TFA2        kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_FA2         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_MA2         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_PA2         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_NA2         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_SU1         kdecu2.kal.telia.se             tcp     ''    1360
+        LOK_CFD         kdecu2.kal.telia.se             tcp     ''    1361
+--
+        LOK_UTV         roman2.kal.data.telia.se        tcp     ''     1360
+        LOK_CFD_OLD     roman2.kal.data.telia.se        tcp     ''      1360    LOK_CFD
+        LOK_CFU         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_FFU         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_FFX         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_FMX         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_FPX         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOFS        roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOFU        roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOSY        roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_FX          roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_MX          roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_PX          roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOPP        ikdecu2.kal.telia.se            tcp     ''      1360
+        LOK_TOPPX       roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_NT2     	roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_MT2     	roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TFS1        ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_FS1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_MS1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PS1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_TFA1        ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_FA1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_MA1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PA1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_TFF1        kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_FF1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_MF1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_PF1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_TFU2        ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_FU2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_MU2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PU2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_TFS2        ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_FS2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_MS2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PS2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_NAX         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PSF         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOPPFBS     roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_T2F         roman3.kal.data.telia.se        tcp     ''      1360
+        LOK_T2M         roman3.kal.data.telia.se        tcp     ''      1360
+        LOK_T2T         roman3.kal.data.telia.se        tcp     ''      1360
+        LOK_NU2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_NS2         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_NU1         ikdecu2.kal.telia.se             tcp     ''      1361
+        LOK_NF1         kdecu2.kal.telia.se             tcp     ''      1361
+        LOK_NS1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_NA1         ikdecu2.kal.telia.se             tcp     ''      1360
+        LOK_FRV         roman2.kal.data.telia.se        tcp     ''      1360
+        LOK_TOPPF       roman2.kal.data.telia.se        tcp     ''      1360
+        TOPPLOK2        roman2.kal.data.telia.se        tcp     ''      1360    LOK_TOPP
+        TOPPU1          ikdecu2.kal.telia.se             tcp     ''      1361    LOK_TFU1
+        TOPPU2          ikdecu2.kal.telia.se             tcp     ''      1360    LOK_TFU2
+        TOPPS1          ikdecu2.kal.telia.se             tcp     ''      1360    LOK_TFS1
+        TOPPS2          ikdecu2.kal.telia.se             tcp     ''      1360    LOK_TFS2
+        TOPPA1          ikdecu2.kal.telia.se             tcp     ''      1361    LOK_TFA1
+        TOPPA2          ikdecu2.kal.telia.se             tcp     ''      1361    LOK_TFA2
+        LOK_MC9         kdect3.han.telia.se             tcp     ''      1361
+        LOK_MC7         kdect3.han.telia.se             tcp     ''      1360
+        LOK_FG          lokusfg.data.telia.se           tcp     ''      1360
+        LOK_PC          lokuspc.data.telia.se           tcp     ''      1360
+        LOK_MC          lokusmc.data.telia.se           tcp     ''      1360
+        TOPPLOK         klok02.data.telia.se            tcp     ''      1360    LOK_TOPP
+        TOPP7           kdect3.kal.telia.se             tcp     ''      1360    LOK_TOPP7
+        TOPP9           kdect3.han.telia.se             tcp     ''      1361    LOK_TOPP9
+        LOK_GERT        217.212.4.126                   ''      ''      1360
+-------------------------------------------------------------------------------

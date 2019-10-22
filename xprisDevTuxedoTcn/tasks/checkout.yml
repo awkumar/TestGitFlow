@@ -1,0 +1,64 @@
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/appdir"
+    dest: "{{DEV_TCN_DIR}}/appdir"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/common"
+    dest: "{{DEV_TCN_DIR}}/common"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/jrep"
+    dest: "{{DEV_TCN_DIR}}/jrep"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/orderspara"
+    dest: "{{DEV_TCN_DIR}}/orderspara"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/services"
+    dest: "{{DEV_TCN_DIR}}/services"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/st"
+    dest: "{{DEV_TCN_DIR}}/st"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    force: true
+    repo: "{{svn_repo}}{{svn_branch}}/xpn"
+    dest: "{{DEV_TCN_DIR}}/xpn"
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    repo: "{{svn_repo}}{{svn_branch}}/makelinuxinc"
+    dest: "{{DEV_TCN_DIR}}/makelinuxinc"
+    export: true
+    force: true
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"
+
+- subversion:
+    repo: "{{svn_repo}}{{svn_branch}}/makelinuxsuff"
+    dest: "{{DEV_TCN_DIR}}/makelinuxsuff"
+    export: true
+    force: true
+    username: "{{svn_user}}"
+    password: "{{svn_pass}}"

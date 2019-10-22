@@ -1,0 +1,28 @@
+oracle_path: oracle/product/12.1.0/client_1
+oracle_sid: xbasttst
+
+mimer_path: mimer/MimerSQL-10.1.3A
+tuxedo_path: oratux_home/tuxedo12.2.2.0.0
+
+ctrl_root: /opt/xpris
+inst_root: '/opt/xpris/xpris1/jenkins/workspace/System/installations/'
+
+base_root: /opt/xpris
+base_folder: '{{base_root}}'
+ctrluser_home: '{{base_root}}/home/xprisadm'
+
+install_user: xprisadm
+installer_group: xprisadm
+
+app_user: xpris
+app_group: xpris
+
+UBB_TEMPLATE: ubb.tuxtcn.j2
+DMCONFIG_TEMPLATE: dmconfig.tuxtcn.j2
+INTERFACES_TEMPLATE: interfaces.j2
+SQLHOSTS_TEMPLATE: sqlhosts.j2
+BOLAG_TEMPLATE: bolag.cfg.j2
+
+TCN_PORT_HTTP: 32025
+
+isProduction: false

@@ -1,0 +1,52 @@
+- name: Create directories for tuxtcn dev
+  become_user: "{{app_user}}"
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{tuxtcndom}}', mode: '0775' }
+     - { path: '{{tuxtcndom}}/kitdist', mode: '0775' }
+     - { path: '{{DEV_TCN_DIR}}', mode: '0775' }
+     - { path: '{{DEV_TCN_DIR}}/script', mode: '0775' }
+    
+
+- include: env.yml
+  become_user: "{{app_user}}"
+  tags: prepare-dev-env
+
+# Exclude this stepuntil it is decided how we handle this.
+#- include: folibs.yml
+#  become_user: "{{app_user}}"
+#  tags: prepare-dev-env, build
+  
+# fetch code from current workspace
+#- include: checkout.yml
+#  become_user: "{{app_user}}"
+#  tags: prepare-dev-env, build
+
+# fetch code from current workspace  
+- name: Upload tuxedo_tcn_dev.zip
+  become_user: "{{app_user}}"
+  copy:
+    src:   "/opt/xpris/xpris1/jenkins/workspace/{{application_version}}_All_xpris/Tuxedo/tuxedo_tcn_dev.zip"
+    dest:  "{{DEV_TCN_DIR}}"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Extract tuxedo_tcn_dev.zip
+  become_user: "{{app_user}}"
+  unarchive: 
+    remote_src: yes
+    src:   "{{DEV_TCN_DIR}}/tuxedo_tcn_dev.zip"
+    dest:  "{{DEV_TCN_DIR}}"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  
+  
+- include: build.yml
+  become_user: "{{app_user}}"
+  tags: build
+  
+- include: pack.yml
+  become_user: "{{app_user}}"
+  tags: pack

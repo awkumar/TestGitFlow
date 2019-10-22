@@ -1,0 +1,55 @@
+---
+- name: Create Directories for Tomcat
+  become: True
+  become_user: root
+  become_method: sudo
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{base_folder}}/tomcat', mode: '0775' }
+     
+
+- name: Copy Tomcat archive
+  become: True
+  become_user: root
+  become_method: sudo
+  copy:
+    src: "{{ inst_root }}/apache-tomcat-{{tomcat_revision}}.tar.gz"
+    dest: "{{ base_folder }}/installations/apache-tomcat-{{tomcat_revision}}.tar.gz"
+
+- name: Extract Tomcat archive
+  become: True
+  become_user: root
+  become_method: sudo
+  unarchive: 
+    remote_src: yes
+    src:   "{{ base_folder }}/installations/apache-tomcat-{{tomcat_revision}}.tar.gz"
+    dest:  "{{base_folder}}/tomcat/"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    
+- name: change ownership of Tomcat archive
+  become: True
+  become_user: root
+  become_method: sudo
+  file:
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    recurse: yes
+    path: "{{base_folder}}/tomcat/"
+    state: directory
+    
+- name: Create link to current tomcat
+  become: True
+  become_user: root
+  become_method: sudo
+  file:
+    src: "{{base_folder}}/tomcat/apache-tomcat-{{tomcat_revision}}"
+    dest: "{{ base_folder }}/tomcat/current"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    state: link
+    
+    
+

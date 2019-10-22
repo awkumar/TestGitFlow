@@ -1,0 +1,95 @@
+
+- name: Upload sqlhosts.xpris.j2 to /etc/
+  become: True
+  become_user: "root"
+  become_method: sudo 
+  template:
+    src:   "{{SQLHOSTS_TEMPLATE}}"
+    dest:  "/etc/sqlhosts"
+    owner: "root"
+    group: "root"
+    mode: 0775
+    
+- name: Create directory
+  become: True
+  become_user: "{{app_user}}"
+  become_method: sudo
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{base_folder}}/oracle/local/CLIENT', mode: '0775' }
+
+- name: Upload tnsnames.ora
+  template:
+    src:   "tnsnames.ora.j2"
+    dest:  "{{base_folder}}/oracle/local/CLIENT/tnsnames.ora"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Upload sybase interfaces file
+  template:
+    src:   "{{INTERFACES_TEMPLATE}}"
+    dest:  "{{ base_folder }}/sybase/interfaces"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+# Application specific configuration files
+- name: Upload setenv 
+  template:
+    src:   "setenv.j2"
+    dest:  "{{tuxtcndom}}/setenv"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Upload {{UBB_TEMPLATE}}
+  template:
+    src:   "{{UBB_TEMPLATE}}"
+    dest:  "{{appdir}}/cfg/ubb"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify:
+    - stop tuxtcn
+    - load ubb into tuxtcn
+    - start tuxtcn 
+
+- name: Upload {{DMCONFIG_TEMPLATE}} 
+  template:
+    src:   "{{DMCONFIG_TEMPLATE}}"
+    dest:  "{{appdir}}/cfg/dmconfig"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify:
+    - stop tuxtcn
+    - load dmconfig into tuxtcn
+    - start tuxtcn
+
+- name: Upload ENVFILE.xpris.j2
+  template:
+    src:   "ENVFILE.xpris.j2"
+    dest:  "{{appdir}}/cfg/ENVFILE"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify:
+    - stop tuxtcn
+    - start tuxtcn
+
+- name: Upload bolag.cfg.j2
+  template:
+    src:   "{{BOLAG_TEMPLATE}}"
+    dest:  "{{appdir}}/cfg/bolag.cfg"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775   
+
+- name: Upload sqlhosts.xpris.j2 
+  template:
+    src:   "{{SQLHOSTS_TEMPLATE}}"
+    dest:  "{{appdir}}/cfg/sqlhosts"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775

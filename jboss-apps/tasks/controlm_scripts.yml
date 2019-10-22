@@ -1,0 +1,31 @@
+- name: Create script directory
+  become_user: "{{app_user}}"
+  file: path="{{base_folder}}/script" state=directory
+
+- name: Create script directory
+  become_user: "{{app_user}}"
+  file: path="{{base_folder}}/script/controlm" state=directory mode="0775"
+
+- name: Create script directory
+  become_user: "{{app_user}}"
+  file: path="{{base_folder}}/script/controlm/apps" state=directory mode="0775"
+
+- name: Upload controlm scripts
+  become_user: "{{app_user}}"
+  template: src="{{item.template}}" dest="{{base_folder}}/script/controlm/apps/{{item.name}}" owner="{{app_user}}" group="{{app_group}}" mode="0775"
+  with_items:
+   - { template: 'runbatch.sh.j2', name: 'runbatch.sh' }
+   - { template: 'README.j2', name: 'README' }
+
+- name: Adding cron job for sending statusqueue to Telsims
+  become: True
+  become_user: "{{app_user}}"
+  become_method: sudo
+  cron: 
+    name: "Send statusqueue to Telsims"
+    minute: "*/2"
+    hour: "*"
+    job: "({{base_folder}}/script/controlm/apps/runbatch.sh sendstatusqueue) > /dev/null 2>&1"
+  when: isProduction == false
+   
+  

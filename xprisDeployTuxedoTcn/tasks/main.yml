@@ -1,0 +1,53 @@
+---
+
+- name: Upload release package xpntux{{application_version}}.tgz
+  become_user: "{{app_user}}"
+  copy:
+    src:   "/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Tuxedo/xpntux{{application_version}}.tgz"
+    dest:  "{{tuxtcndom}}/xpntux{{application_version}}.tgz"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Upload relink-server.sh
+  become_user: "{{app_user}}"
+  template:
+    src:   "relink-servers.sh.j2"
+    dest:  "{{base_folder}}/script/relink-servers.sh"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Try to stop wildfly if it was running
+  service: name='wildfly' state='stopped'
+  ignore_errors: yes
+
+- name: stop tuxtcn 
+  become_user: "{{app_user}}"
+  shell: "{{base_folder}}/script/xpris_tux_tcn_stop"
+  ignore_errors: yes
+  tags: stop-tuxtcn
+
+
+- name: Extract release package xpntux{{application_version}}.tgz
+  become_user: "{{app_user}}"
+  unarchive: 
+    remote_src: yes
+    src:   "{{tuxtcndom}}/xpntux{{application_version}}.tgz"
+    dest:  "{{appdir}}"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Relink Servers.
+  become_user: "{{app_user}}"
+  shell: "{{base_folder}}/script/relink-servers.sh"
+  ignore_errors: yes
+  
+- name: start tuxtcn
+  become_user: "{{app_user}}"
+  shell: "{{base_folder}}/script/xpris_tux_tcn_start"
+  ignore_errors: yes
+  tags: start-tuxtcn
+
+ 

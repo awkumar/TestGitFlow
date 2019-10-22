@@ -1,0 +1,21 @@
+---
+- name: stop tuxtcn 
+  become_user: "{{app_user}}"
+  shell: "~/bin/xpris_tux_tcn_stop"
+  # ". {{tuxtcndom}}/setenv ; tmshutdown -yw1"
+  ignore_errors: yes
+  
+- name: load ubb into tuxtcn
+  become_user: "{{app_user}}"
+  shell: ". {{tuxtcndom}}/setenv ; tmloadcf -y {{appdir}}/cfg/ubb"
+
+- name: load dmconfig into tuxtcn
+  become: yes
+  become_user: "{{app_user}}"
+  shell: ". {{tuxtcndom}}/setenv ; dmloadcf -y {{appdir}}/cfg/dmconfig"
+  
+- name: start tuxtcn
+  become_user: "{{app_user}}"
+  shell: "~/bin/xpris_tux_tcn_start"
+  # ". {{tuxtcndom}}/setenv ; tmboot -y"
+  ignore_errors: yes

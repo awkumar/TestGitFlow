@@ -1,0 +1,47 @@
+#!/bin/bash
+set -x -v
+. {{tuxtcndom}}/setenv
+tmadmin <<- EOF
+crdl -b1000 -o0 -z {{tuxtcndom}}/appdir/tlog/TLOG
+quit
+EOF
+
+. {{tuxtcndom}}/setenv
+qmadmin <<- EOF
+crdl
+"{{tuxtcndom}}/appdir/cfg/bqmconfig"
+0
+500
+500
+qspacecreate
+mailqspc
+172105
+200
+3
+5
+5
+200
+mailerrq
+y
+
+qopen mailqspc
+qcreate
+DequeEmailL
+fifo
+
+10
+60
+
+
+
+qcreate
+mailerrq
+fifo
+
+
+
+
+
+quit
+EOF     
+

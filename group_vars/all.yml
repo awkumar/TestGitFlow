@@ -1,0 +1,13 @@
+install_root: /opt/xpris
+temp_dir: /tmp
+backup_dir: "{{ install_root }}/backups"
+
+java_version: "jdk1.8.0_111"
+java_inst_root: "{{ install_root }}/java"
+java_home: "{{ java_inst_root }}/current"
+
+inst_root: '/opt/xpris/xpris1/jenkins/workspace/System/installations/'
+
+jboss_version: "wildfly-11.0.0.Final"
+jboss_archive: "{{ wildfly_version }}.tar.gz"
+

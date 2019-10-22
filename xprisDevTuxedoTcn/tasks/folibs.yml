@@ -1,0 +1,10 @@
+- name: Uploading getFoLibs.sh
+  template:
+    src:   "getFoLibs.sh.j2"
+    dest: "{{DEV_TCN_DIR}}/script/getFoLibs.sh"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    
+- name: Fetching Folibs from Frontoffice.
+  shell: "{{DEV_TCN_DIR}}/script/getFoLibs.sh"

@@ -1,0 +1,23 @@
+#!/bin/sh
+Prev=$PWD
+export TUXEDODOMAIN={{tuxtcndom}}
+
+if [[ -f $TUXEDODOMAIN/kompilering_pagaar ]]; then
+echo "Naagon koer redan en kompilering i denna miljoe"
+exit
+fi
+#Skapa fil foer att varna andra
+touch $TUXEDODOMAIN/kompilering_pagaar
+
+cd $TUXEDODOMAIN/dev/common/fml
+make $1
+
+cd $TUXEDODOMAIN/dev/common
+. makeCommon $1
+
+cd $Prev
+
+rm -f $TUXEDODOMAIN/kompilering_pagaar
+echo ""
+echo "Klar. makeC"
+echo ""

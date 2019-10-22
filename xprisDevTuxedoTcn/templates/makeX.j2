@@ -1,0 +1,38 @@
+#!/bin/sh
+Prev=$PWD
+export TUXEDODOMAIN={{tuxtcndom}}
+
+
+# Make sure directory xpn/lib exists
+mkdir -p $TUXEDODOMAIN/dev/xpn/lib
+
+cd $TUXEDODOMAIN/dev/xpn/
+. makeXpn $1
+
+cd $TUXEDODOMAIN/dev/st/
+. makeSt $1
+
+cd $TUXEDODOMAIN/dev/xpn/xline/
+. makeXline $1
+
+cd $TUXEDODOMAIN/dev/xpn/lpris/
+. makeLpris $1
+
+cd $TUXEDODOMAIN/dev/xpn/ipris/
+. makeipris $1
+
+cd $TUXEDODOMAIN/dev/xpn/tpris/
+. makeTpris $1
+
+cd $TUXEDODOMAIN/dev/xpn/centrex/
+. makeCentrex $1
+
+cd $TUXEDODOMAIN/dev/xpn/lojavtal/
+. makeLojavtal $1
+
+cd $Prev
+
+echo ""
+echo "Klar. makeX."
+echo ""
+

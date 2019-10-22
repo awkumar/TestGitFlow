@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!-- The contents of this file will be loaded for each web application -->
+<!-- <Context> -->
+<Context privileged="true">
+
+    <!-- Default set of monitored resources -->
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    
+    <Parameter name="envFile" value="{{base_folder}}/domains/tomxpnportal/webroot/webapps/environments.xml" override="true"/>
+    <Parameter name="eventFile" value="{{base_folder}}/domains/tomxpnportal/webroot/webapps/calendar.txt" override="true"/>
+    <Parameter name="driftInfo" value="{{base_folder}}/domains/tomxpnportal/webroot/webapps/driftInfo.txt" override="true"/>
+
+    <!-- Uncomment this to disable session persistence across Tomcat restarts -->
+    <!--
+    <Manager pathname="" />
+    -->
+
+    <!-- Uncomment this to enable Comet connection tacking (provides events
+         on session expiration as well as webapp lifecycle) -->
+    <!--
+    <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
+    -->
+    
+        <Resource name="jdbc/utv" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPNUTV" password="T5T_XPNUTV" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/utv1" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPNUTV1" password="T5T_XPNUTV1" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/utv2" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPNUTV2" password="T5T_XPNUTV2" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/utv3" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPNUTV3" password="T5T_XPNUTV3" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+              
+        <Resource name="jdbc/test" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPRIS" password="T5T_XPRIS" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/test1" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPRIS1" password="T5T_XPRIS1" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/test2" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPRIS2" password="T5T_XPRIS2" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/test3" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPRIS3" password="T5T_XPRIS3" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/forv" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="XPNFORV" password="T5T_XPNFORV" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/itest" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xp001xprisdbtst.ddc.teliasonera.net:1521:XBASTST"
+              username="ITEST" password="T5T_ITEST" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+
+        <Resource name="jdbc/prod" auth="Container"
+              type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
+              url="jdbc:oracle:thin:@xbas.db.han.telia.se:1567:XBAS"
+              username="XPRIS" password="oraxpris" maxTotal="20" maxIdle="10"
+              maxWaitMillis="-1"/>
+              
+</Context>
+              

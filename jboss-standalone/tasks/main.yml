@@ -1,0 +1,217 @@
+---
+- name: Try to stop wildfly if it was running
+  service: name='wildfly' state='stopped'
+  ignore_errors: yes
+
+- name: Create Directories for JBoss 
+  become: True
+  become_user: root
+  become_method: sudo
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{base_folder}}/jboss', mode: '0775' }
+
+- name: Copy JBoss archive to remote host
+  become: True
+  become_user: root
+  become_method: sudo
+  copy:
+    src: "{{ inst_root }}/wildfly-{{jboss_revision}}.tar.gz"
+    dest: "{{ base_folder }}/installations/wildfly-{{jboss_revision}}.tar.gz"
+    
+- name: Copy JBoss module ojdbc7 to remote host
+  become: True
+  become_user: root
+  become_method: sudo
+  copy:
+    src: "{{ inst_root }}/ojdbc7-module.zip"
+    dest: "{{ base_folder }}/installations/ojdbc7-module.zip"
+
+- name: If not installed, install WildFly
+  stat:
+    path: "{{ base_folder }}/jboss/wildfly-{{ jboss_revision }}"
+  register: wildfly_dir
+  tags: install,wildfly-install
+
+- name: Unpack WildFly
+  when: not wildfly_dir.stat.exists
+  become: True
+  become_user: root
+  become_method: sudo
+  unarchive: 
+    remote_src: yes
+    src:   "{{ base_folder }}/installations/wildfly-{{jboss_revision}}.tar.gz"
+    dest:  "{{base_folder}}/jboss/"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    
+- name: If not installed, install ojdbc7
+  stat:
+    path: "{{ base_folder }}/jboss/wildfly-{{ jboss_revision }}/modules/com/oracle/ojdbc7"
+  register: ojdbc_dir
+  tags: install,wildfly-install
+
+- name: unarchive ojdbc7 module
+  when: not ojdbc_dir.stat.exists 
+  unarchive:
+    src: "{{ base_folder }}/installations/ojdbc7-module.zip"
+    dest: "{{ base_folder }}/jboss/wildfly-{{jboss_revision}}/modules"
+    remote_src: True
+
+- name: change ownership of JBoss archive
+  become: True
+  become_user: root
+  become_method: sudo
+  file:
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    recurse: yes
+    path: "{{base_folder}}/jboss/"
+    state: directory
+    
+- name: Create link to current jboss
+  become: True
+  become_user: root
+  become_method: sudo
+  file:
+    src: "{{base_folder}}/jboss/wildfly-{{jboss_revision}}"
+    dest: "{{ base_folder }}/jboss/current"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    state: link
+    
+- name: Create Domain Directories for Jboss domain
+  become_user: "{{app_user}}"
+  file: path={{ item.path }} state=directory recurse=false owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{base_folder}}/domains/jboss', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/configuration', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/deployments', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/lib', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/lib/ext', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/tmp', mode: '0775' }
+     - { path: '{{base_folder}}/domains/jboss/auth', mode: '0775' }
+     - { path: '{{base_folder}}/splunk', mode: '0775' }
+
+- name: Upload standalone-full.xml
+  become_user: "{{app_user}}"
+  template:
+    src:   "standalone-full.xml.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/standalone-full.xml"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+
+- name: Upload application-users.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "application-users.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/application-users.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+
+- name: Upload application-roles.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "application-roles.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/application-roles.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+    
+- name: Upload logging.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "logging.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/logging.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+    
+- name: Upload mgmt-groups.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "mgmt-groups.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/mgmt-groups.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+
+- name: Upload mgmt-users.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "mgmt-users.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/mgmt-users.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+    
+- name: Upload env.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "env.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/env.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+
+
+- name: Create Directories used for xprisdata and other xpris related datafiles 
+  become_user: "{{app_user}}"
+  file: path={{ item.path }} state=directory recurse=true owner={{ app_user }} group={{ app_group }} mode={{ item.mode }}
+  with_items:
+     - { path: '{{ base_folder }}/domains/jboss/datafiler/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/jboss/xsd/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/jboss/xprisdata/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/jboss/releaseinfo/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/FTP/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/FTP/Xtas/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/FTP/Alpha/', mode: '0775' }
+     - { path: '{{ base_folder }}/domains/FTP/Alpha_hist/', mode: '0775' }
+     
+     
+- name: Install WildFly as a Linux service
+  import_tasks: wildfly.yml
+  tags: install,wildfly-install
+
+#- name: Upload jboss.sh
+#  become_user: "{{app_user}}"
+#  template:
+#    src:   "jboss.sh.j2"
+#    dest:  "{{base_folder}}/domains/jboss/jboss.sh"
+#    owner: "{{app_user}}"
+#    group: "{{app_group}}"
+#    mode: 0775
+    
+- name: Upload xpris-role-mapping.properties
+  become_user: "{{app_user}}"
+  template:
+    src:   "xpris-role-mapping.properties.j2"
+    dest:  "{{base_folder}}/domains/jboss/configuration/xpris-role-mapping.properties"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  notify: restart jboss
+
+#- name: start jboss
+#  become_user: "{{app_user}}"
+#  shell: "nohup {{base_folder}}/domains/jboss/jboss.sh start > /dev/null"
+#  
+#- name: wait for jboss to start
+#  wait_for: 
+#    host: "{{ ansible_nodename }}"
+#    port: "{{ jboss_http_port }}"
+
+- name: Be sure that jboss is running
+  service: name='wildfly' state='started'
+

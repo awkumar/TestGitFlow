@@ -1,0 +1,24 @@
+ctrl_root: /opt/xpris
+inst_root: '/opt/xpris/xpris1/jenkins/workspace/System/installations/'
+base_root: /opt/xpris
+base_folder: '{{base_root}}/xpris1'
+ctrluser_home: '{{base_root}}/home/xprisadm'
+ansible_home: '{{base_folder}}/jenkins/workspace/System/xpris/ansible-playbooks/ansible-playbook'
+
+install_user: xprisadm
+installer_group: xpris
+
+app_user: xprisadm
+app_group: xpris
+
+# Here are variables related to the Tomcat installation
+
+tomcat_java_version: "1.8.0"
+
+tomcat_version: "tomcat-8"
+tomcat_revision: "8.5.11"
+
+# This will configure a default manager-gui user:
+
+tomcat_admin_username: admin
+tomcat_admin_password: adminsecret

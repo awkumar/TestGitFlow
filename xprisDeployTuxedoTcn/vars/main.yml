@@ -1,0 +1,2 @@
+tuxtcndom: "{{base_folder}}/domains/tuxtcn"
+appdir: "{{tuxtcndom}}/appdir"

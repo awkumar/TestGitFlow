@@ -1,0 +1,58 @@
+#!/bin/bash
+# Provides: Jboss script for multiple standalone
+# Short-Description: Start/Stop/Restart/Forceshutdown WildFly 11.0.0
+#
+#source some script files in order to set and export environmental variables
+#as well as add the appropriate executables to $PATH
+
+export JAVA_HOME={{ base_folder }}/java/current
+export PATH=$JAVA_HOME/bin:$PATH
+
+export JBOSS_HOME={{base_folder}}/jboss/current
+export PATH=$JBOSS_HOME/bin:$PATH
+
+LC_COLLATE=sv_SE.ISO88591
+LC_CTYPE=sv_SE.ISO88591
+NLS_LANG=american_america.we8iso8859p1
+export LC_COLLATE LC_CTYPE NLS_LANG
+
+#Parameter needed to be set per standalone installation for example test11,test12....
+export JBOSS_INSTANCE={{base_folder}}/domains/jboss
+export JBOSS_MANAGEMENT_URL={{ ansible_nodename }}:9990
+export JAVA_OPTS="-Xms2048M -Xmx2048M -XX:MaxMetaspaceSize=512M"
+export JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true"
+
+case "$1" in
+    start)
+        echo "Starting WildFly 11.0.0"
+        ${JBOSS_HOME}/bin/standalone.sh -c standalone-full.xml -P={{base_folder}}/domains/jboss/configuration/env.properties -Djboss.bind.address={{ ansible_nodename }} -Djboss.bind.address.management={{ ansible_nodename }} -Djboss.server.base.dir=${JBOSS_INSTANCE} > /dev/null 2>&1 &
+    ;;
+    stop)
+        echo "Stopping WildFly 11.0.0"
+        ${JBOSS_HOME}/bin/jboss-cli.sh --connect controller=${JBOSS_MANAGEMENT_URL} command=:shutdown > /dev/null 2>&1 &
+    ;;
+    status)
+        echo "Status WildFly 11.0.0"
+        ${JBOSS_HOME}/bin/jboss-cli.sh --connect controller=${JBOSS_MANAGEMENT_URL} command=:"read-attribute(name=server-state)"
+    ;;
+    mem)
+        echo "Memory for WilfFly 11.0.0"
+        ${JBOSS_HOME}/bin/jboss-cli.sh --connect controller=${JBOSS_MANAGEMENT_URL} command="/core-service=platform-mbean/type=memory :read-resource(include-runtime=true)"
+    ;;
+    restart)
+        echo "Restart WilfFly 11.0.0"
+        ${JBOSS_HOME}/bin/jboss-cli.sh --connect controller=${JBOSS_MANAGEMENT_URL} command=:"shutdown(restart=true)" > /dev/null 2>&1 &
+    ;;
+    forceshutdown)
+        echo "Force Shutdown WildFly 11.0.0"
+        #Don't forget to set path for jboss in force shutdown
+        export ProcessId=`ps auwwx | grep -v awk | awk '/'${PROC_USER}'/ && $JBOSS_INSTANCE && /org.jboss.as.standalone/ { print $2 }'`
+        kill ${ProcessId}
+    ;;
+    *)
+        echo "Usage: jboss.sh {start|stop|status|mem|restart|forceshutdown}"
+        exit 1
+    ;;
+esac
+ 
+exit 0

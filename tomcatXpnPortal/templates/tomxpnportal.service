@@ -1,0 +1,26 @@
+# Systemd unit file for tomcat
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=syslog.target network.target
+
+[Service]
+Type=forking                                   
+
+Environment=JAVA_HOME={{ base_folder }}/java/current/jre
+Environment=CATALINA_HOME={{base_folder}}/tomcat/current
+
+Environment=CATALINA_BASE={{base_folder}}/domains/tomxpnportal/webroot
+Environment=CATALINA_PID={{base_folder}}/domains/tomxpnportal/webroot/xpris_tomxpnportal.pid
+
+#Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+
+ExecStart={{base_folder}}/tomcat/current/bin/startup.sh
+ExecStop={{base_folder}}/tomcat/current/bin/shutdown.sh
+
+User={{app_user}}
+Group={{app_group}}
+
+[Install]
+WantedBy=multi-user.target
+
+

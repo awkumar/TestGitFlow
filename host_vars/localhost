@@ -1,0 +1,67 @@
+application_version: 1721
+
+base_root: /opt/xpris
+ctrluser_home: '/home/xprisadm'
+inst_root: '{{ctrluser_home}}/installations'
+
+gesburl: http://mw500eot1.ddc.teliasonera.net:61102/
+gesbuser: xpris_gesb
+gesbpwd: tadn123
+
+ipckey: 172100
+ubbDomainid: XPNLOCAL
+ubbMachines: '{{ ansible_nodename }}'
+ubbLmid: XPR
+mMachine: '{{ ansible_nodename }}'
+
+ubbLokTop: LOK_TFA2
+ubbToppUser: TOPPLOK
+ubbToppPass: TOPPLOK
+
+bolag_F: FA2
+bolag_F_prefix: F
+bolag_F_D: LOK_FA2
+bolag_F_user: LOKSP
+bolag_F_pwd: LOKFA2
+
+bolag_P: PA2
+bolag_P_prefix: P
+bolag_P_D: LOK_PA2
+bolag_P_user: LOKSP
+bolag_P_pwd: LOKPA2
+
+bolag_M: MA2
+bolag_M_prefix: M
+bolag_M_D: LOK_MA2
+bolag_M_user: LOKSP
+bolag_M_pwd: LOKMA2
+
+bolag_N: NA2
+bolag_N_prefix: N
+bolag_N_D: LOK_NA2
+bolag_N_user: LOKSP
+bolag_N_pwd: LOKNA2
+
+ubbLokcfd: LOK_CFD
+ubbLokcfdUser: CFDADM 
+ubbLokcfdPass: MASTER
+
+xpris_tnsnames_entry: XBASTST
+
+xprisAuthSID: XBASTST
+xprisAuthUser: XPRISST
+xprisAuthPass: T5T_XPRISST
+
+xprisDbHost: xp001xprisdbtst.ddc.teliasonera.net
+xprisDbPort: 1521
+xprisDbSID: XBASTST
+xprisDbUser: XPNUTV3
+xprisDbPass: T5T_XPNUTV3
+
+
+sybClopt: -A -- -S ISUTV01 -U front02 -P wsx345 -D fovo -O dbo -a fo -M FRONTOFF -F SybIsutv01
+#sybClopt: -A -- -S ISUTV02 -U front00 -P qaz123 -D fovo -O dbo -a fo -M FRONTOFF -F SybIsutv02
+
+nmsClopt: -A -- -S NMS -Uxpris -Pxprisxpris -D xpris -O dbo -A fo -M XPRIS
+
+jslClopt:  -- -n //localhost:35010 -d /dev/tcp -m 2 -M 5 -x 10

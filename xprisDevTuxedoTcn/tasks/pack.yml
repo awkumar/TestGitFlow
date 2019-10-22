@@ -1,0 +1,34 @@
+
+- name: Upload crekit
+  template:
+    src:   "crekitux.j2"
+    dest: "{{DEV_TCN_DIR}}/script/crekitux"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    
+- name: Create Directories for currnet application version
+  file: path={{ item.path }} state=directory recurse=true owner={{app_user}} group={{app_group}} mode={{ item.mode }}
+  with_items:
+    - { path: '{{base_folder}}/release/{{application_version}}', mode: '0775' }
+
+
+- name: Pack release
+  shell: "{{DEV_TCN_DIR}}/script/crekitux"
+  
+#- name: Creating release {{application_version}} folder in /opt/xpris/xpris1/release/ 
+#  become_user: "{{install_user}}"
+#  local_action: file path="/opt/xpris/xpris1/release/{{application_version}}" state="directory"
+
+#- name: Fetch file from remote to controller server
+#  fetch:
+#    src:  "{{base_folder}}/release/{{application_version}}/xpntux{{application_version}}.tgz"
+#    dest: "/opt/xpris/xpris1/release/{{application_version}}/xpntux{{application_version}}.tgz"
+#    flat: yes
+
+- name: Fetch file from remote to jenkins
+  become_user: "{{app_user}}"
+  fetch:
+    src: "{{base_folder}}/release/{{application_version}}/xpntux{{application_version}}.tgz"
+    dest: "/opt/xpris/xpris1/jenkins/workspace/{{application_version}}_All_xpris/Tuxedo/xpntux{{application_version}}.tgz"
+    flat: yes

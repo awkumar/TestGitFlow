@@ -1,0 +1,409 @@
+*RESOURCES
+IPCKEY          {{ipckey}}
+MASTER          {{ubbLmid}}
+UID             {{UBB_UID}}
+GID             {{UBB_GID}}
+PERM            0666
+MAXACCESSERS    {{UBB_MAXACCESSERS}}
+MAXACLGROUPS    16384
+MAXGTT          100
+DOMAINID        {{ubbDomainid}}
+MAXGROUPS       100
+MAXMACHINES     256
+MAXQUEUES       200
+MAXDRT          0
+MAXRFT          0
+MAXRTDATA       4
+MAXSERVERS      400
+MAXSERVICES     7000
+MAXCONV         1
+MODEL           SHM
+LDBAL           Y
+CMTRET          COMPLETE
+MAXBUFTYPE      16
+MAXBUFSTYPE     32
+SCANUNIT        10
+SANITYSCAN      12
+DBBLWAIT        2
+BBLQUERY        30
+BLOCKTIME       100
+NOTIFY          DIPIN
+SYSTEM_ACCESS   FASTPATH
+USIGNAL         SIGUSR2
+SECURITY       USER_AUTH
+AUTHSVC        "XPRISAUTH"
+
+*MACHINES
+"{{ubbMachines}}" LMID="{{ubbLmid}}"
+    ULOGPFX="{{base_folder}}/domains/tuxtcn/appdir/log/ULOG"
+    TUXCONFIG="{{base_folder}}/domains/tuxtcn/appdir/cfg/tuxconfig"
+    TUXDIR="{{base_folder}}/{{tuxedo_path}}"
+    APPDIR="{{base_folder}}/domains/tuxtcn/appdir/bin"
+    ENVFILE="{{base_folder}}/domains/tuxtcn/appdir/cfg/ENVFILE"
+    MAXWSCLIENTS={{UBB_MAXWSCLIENTS}}
+    CMPLIMIT="MAXLONG,MAXLONG"
+    NETLOAD=0
+    SPINCOUNT=0
+    MAXACLCACHE=100
+    TLOGNAME="TLOG"
+    TLOGSIZE=100
+    TLOGDEVICE="{{base_folder}}/domains/tuxtcn/appdir/tlog/TLOG"
+
+
+*GROUPS
+        DEFAULT:        LMID="XPR" TMSCOUNT=3
+        "FGGRP"         GRPNO=10
+        "MCGRP"         GRPNO=20
+        "NAGRP"         GRPNO=30
+        "PCGRP"         GRPNO=40
+        "FORWGRP"       GRPNO=50
+        "TOPPGRP"       GRPNO=60
+        "CFDGRP"        GRPNO=70
+        "LOGGRP"        GRPNO=80
+        "SYBGRP"        GRPNO=90
+        "NMSGRP"        GRPNO=100
+        "AUTHGRP"       GRPNO=110
+        "ORAGRP"        GRPNO=120  TMSNAME=TMS  TMSCOUNT=2
+        "ACLGRP"        GRPNO=130
+        "JOLTGRP"       GRPNO=140
+        "DMGRP"         GRPNO=150
+        "TADGRP"        GRPNO=160
+        "PUBGRP"        GRPNO=170
+        "TXNGRP"        GRPNO=180
+        "XLINE"         GRPNO=190
+        "PROMIS"        GRPNO=200
+        "WSLGRP"        GRPNO=220
+        "SANDGRP"       GRPNO=230
+        "KWGRP"         GRPNO=910
+        "WLGRP"         GRPNO=920
+        "SYSGRP"        GRPNO=930
+        "AKFGRP"        GRPNO=940
+        "TXNGRP2"       GRPNO=950
+        "TMQGRP"        GRPNO=970       TMSNAME=TMS_QM  TMSCOUNT=2
+                                        OPENINFO="TUXEDO/QM:{{base_folder}}/domains/tuxtcn/dev/bqmconfig:mailqspc"
+        "THOLGRP"       GRPNO=980
+
+
+*SERVERS
+
+"logserver"     SRVGRP="LOGGRP" SRVID=500
+                CLOPT="-A -- -L 1 -X FASMISSL"
+                RQPERM=0666  REPLYQ=N  RPPERM=0666  MIN=1  MAX=1  CONV=N  SYSTEM_ACCESS=FASTPATH  MAXGEN=10  GRACE=3600  RESTART=Y
+
+TMQUEUE         SRVGRP=TMQGRP SRVID=2000
+                CLOPT="-s mailqspc:TMQUEUE"
+                RESTART=Y GRACE=0 MAXGEN=2
+
+TMQFORWARD      SRVGRP=TMQGRP SRVID=2010
+                CLOPT="-- -i 30 -q DequeEmailL"
+                RESTART=Y GRACE=0 MAXGEN=2
+
+
+DEFAULT:	RESTART=Y MAXGEN=10 GRACE=3600 MIN=2 MAX=2 REPLYQ=Y
+
+"storalogic"    SRVGRP="ORAGRP"         SRVID=50        RQADDR=STORASERVER
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C storalogic.cfg -D{{xpris_tnsnames_entry}} -F STORA_ -M {{ubbMachines}} -U {{xprisAuthUser}} -P {{xprisAuthPass}} -xS -Q N "
+
+"xpnstatistic"	SRVGRP="ORAGRP"         SRVID=440	RQADDR=XPNSTATISTIC
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C xpnstatistic.cfg -D{{xpris_tnsnames_entry}} -F XpnStat_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+
+"xlineoraserver" 	SRVGRP="ORAGRP" 	SRVID=10	RQADDR=XLINEORAS
+        	CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C xlineoraserver.cfg -D{{xpris_tnsnames_entry}} -F Xlineora_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+        	
+"xpnoralogic"  	SRVGRP="ORAGRP" 	SRVID=20	RQADDR=XPNXBAS
+        	CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C xpnoralogic.cfg -D{{xpris_tnsnames_entry}} -F Xpnxbas_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+        	MIN=3	MAX=3
+
+"tprisoraserver"     	SRVGRP="ORAGRP" 	SRVID=40	RQADDR=TPRISORAS
+       		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C tprisoraserver.cfg -D{{xpris_tnsnames_entry}} -F Tprisora_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS " 
+       		       
+"iproralogic" 	SRVGRP="ORAGRP" 	SRVID=60 	RQADDR=IPRXBAS
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C iproralogic.cfg -D{{xpris_tnsnames_entry}} -F iprora_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS " 
+		MIN=5 MAX=5
+
+"centrexoraserver"      SRVGRP="ORAGRP" SRVID=570       RQADDR=CENTREXBAS 
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C centrexoraserver.cfg -D{{xpris_tnsnames_entry}} -F CentrexBas_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+		MIN=3	MAX=3
+
+"centrexoraserver2"	SRVGRP="ORAGRP" SRVID=1200	RQADDR=CENTREXBAS2
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C centrexoraserver2.cfg -D{{xpris_tnsnames_entry}} -F CentrexBas_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xST "
+		MIN=3   MAX=3
+
+"lojavtaloraserver"	SRVGRP="ORAGRP"	SRVID=575	RQADDR=LOJAVTALXBAS
+		CLOPT="-A  -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr  -- -C lojavtaloraserver.cfg -D{{xpris_tnsnames_entry}} -F LojavtalXbas -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+
+"xpncfd"	SRVGRP="CFDGRP" 	SRVID=70 	RQADDR=XPNCFD
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C xpncfd.cfg -Q N -F Xpncfd_ -M {{ubbMachines}} -D {{ubbLokcfd}} -U {{ubbLokcfdUser}} -P {{ubbLokcfdPass}} -xS "
+		MIN=5	MAX=5
+		
+"sybserv"  	SRVGRP="SYBGRP" 	SRVID=80	RQADDR=SYBSERV  
+      	CLOPT="{{sybClopt}}" 
+		MIN=3	MAX=3
+
+"nmsserv" 	SRVGRP="NMSGRP" 	SRVID=90 	RQADDR=NMSSERV
+		CLOPT="{{nmsClopt}}"
+		MIN=8	MAX=8
+
+"topplokus"	SRVGRP="TOPPGRP" 	SRVID=100 	RQADDR=TOPPLOKUS
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C topplokus.cfg -Q Y -M {{ubbMachines}} -D {{ubbLokTop}} -U {{ubbToppUser}} -P {{ubbToppPass}} -a TOPPLOK,LOKADM,SOE96   -F Topplok_ -xS "
+
+"topplokus2"    SRVGRP="TOPPGRP"        SRVID=560       RQADDR=TOPPLOKUS2
+                CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C topplokus2.cfg -Q Y -M {{ubbMachines}} -D {{ubbLokTop}} -U {{ubbToppUser}} -P {{ubbToppPass}} -a TOPPLOK,LOKADM,SOE96   -F Topplok2_ -xS "
+
+"topplokus3"    SRVGRP="TOPPGRP"        SRVID=105       RQADDR=TOPPLOKUS3
+                CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C topplokus3.cfg -Q Y -M {{ubbMachines}} -D {{ubbLokTop}} -U {{ubbToppUser}} -P {{ubbToppPass}} -a TOPPLOK,LOKADM,SOE96   -F Topplok3_ -xS "
+		MIN=3 MAX=3
+
+"forward"	SRVGRP=FORWGRP		SRVID=110	RQADDR=FORWARD
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C forward.cfg -M {{ubbMachines}} -F Forward_ -Q N -D {{ubbLokTop}} -U {{ubbToppUser}} -P {{ubbToppPass}} -a TOPPLOK,LOKADM,SOE96  -xS "
+
+"centrexlogic"  SRVGRP="MCGRP"          SRVID=580       RQADDR=CENTREXMC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C centrexlogic.cfg -M {{ubbMachines}} -F CentrexMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"centrexlogic"  SRVGRP="FGGRP"          SRVID=590       RQADDR=CENTREXFG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C centrexlogic.cfg -M {{ubbMachines}} -F CentrexFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"centrexlogic"  SRVGRP="NAGRP"		SRVID=670	RQADDR=CENTREXNA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C centrexlogic.cfg -M {{ubbMachines}} -F CentrexNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"centrexlogic"  SRVGRP="PCGRP"          SRVID=680       RQADDR=CENTREXPC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C centrexlogic.cfg  -M {{ubbMachines}} -F CentrexPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xlinelogic"  	SRVGRP="FGGRP"        SRVID=120		RQADDR=XLINELOGIC_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C xlinelogic.cfg -M {{ubbMachines}} -F XlineFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"xlinelogic"  	SRVGRP="MCGRP"        SRVID=130		RQADDR=XLINELOGIC_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C xlinelogic.cfg -M {{ubbMachines}} -F XlineMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+	
+"xlinelogic" 	SRVGRP="NAGRP" 		SRVID= 140	RQADDR=XLINELOGIC_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C xlinelogic.cfg -M {{ubbMachines}} -F XlineNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"xlinelogic" 	SRVGRP="PCGRP" 		SRVID=150	RQADDR=XLINELOGIC_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C xlinelogic.cfg -M {{ubbMachines}} -F XlinePC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xlinelogic2"   SRVGRP="FGGRP"          SRVID=740         RQADDR=XLINELOGIC2_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C xlinelogic2.cfg -M {{ubbMachines}} -F Xline2FG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xlinelogic2"   SRVGRP="MCGRP"          SRVID=750         RQADDR=XLINELOGIC2_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C xlinelogic2.cfg -M {{ubbMachines}} -F Xline2MC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xlinelogic2"   SRVGRP="NAGRP"          SRVID=760	RQADDR=XLINELOGIC2_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C xlinelogic2.cfg -M {{ubbMachines}} -F Xline2NA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xlinelogic2"    SRVGRP="PCGRP"          SRVID=770       RQADDR=XLINELOGIC2_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C xlinelogic2.cfg -M {{ubbMachines}} -F Xline2PC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"orderspara" 	SRVGRP="FGGRP" 		SRVID=160 	RQADDR=ORDERSPARA_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C orderspara.cfg -M {{ubbMachines}} -F OrderFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"orderspara" 	SRVGRP="MCGRP" 		SRVID= 170	RQADDR=ORDERSPARA_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C orderspara.cfg -M {{ubbMachines}} -F OrderMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"orderspara" 	SRVGRP="NAGRP" 		SRVID=180 	RQADDR=ORDERSPARA_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C orderspara.cfg -M {{ubbMachines}} -F OrderNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"orderspara" 	SRVGRP="PCGRP" 		SRVID=190	RQADDR=ORDERSPARA_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C orderspara.cfg -M {{ubbMachines}} -F OrderPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="FGGRP"        SRVID=240		RQADDR=LOPNR_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="FGGRP"        SRVID=245		RQADDR=LOPNR_F
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F_prefix}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrF_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="MCGRP"        SRVID=250		RQADDR=LOPNR_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="MCGRP"        SRVID=255		RQADDR=LOPNR_M
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M_prefix}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrM_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="NAGRP"        SRVID=260		RQADDR=LOPNR_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="NAGRP"        SRVID=265		RQADDR=LOPNR_N
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N_prefix}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrN_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="PCGRP"        SRVID=270		RQADDR=LOPNR_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"lopnr"  	SRVGRP="PCGRP"        SRVID=275		RQADDR=LOPNR_P
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P_prefix}} -C lopnr.cfg -M {{ubbMachines}} -F LopnrP_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"iprlogic"  	SRVGRP="FGGRP"        SRVID=280		RQADDR=IPRLOGIC_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C iprlogic.cfg -M {{ubbMachines}} -F IprFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"iprlogic"  	SRVGRP="MCGRP"        SRVID=290		RQADDR=IPRLOGIC_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C iprlogic.cfg -M {{ubbMachines}} -F IprMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"iprlogic"  	SRVGRP="NAGRP"        SRVID=300		RQADDR=IPRLOGIC_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C iprlogic.cfg -M {{ubbMachines}} -F IprNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"iprlogic"  	SRVGRP="PCGRP"        SRVID=310		RQADDR=IPRLOGIC_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C iprlogic.cfg -M {{ubbMachines}} -F IprPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"tprislogic"  	SRVGRP="FGGRP"        SRVID=320		RQADDR=TPRISLOGIC_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C tprislogic.cfg -M {{ubbMachines}}  -F TprisFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"tprislogic"  	SRVGRP="MCGRP"        SRVID=330		RQADDR=TPRISLOGIC_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C tprislogic.cfg -M {{ubbMachines}} -F TprisMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"tprislogic"  	SRVGRP="NAGRP"        SRVID=340		RQADDR=TPRISLOGIC_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C tprislogic.cfg -M {{ubbMachines}} -F TprisNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"tprislogic"  	SRVGRP="PCGRP"        SRVID=350		RQADDR=TPRISLOGIC_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C tprislogic.cfg -M {{ubbMachines}} -F TprisPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		
+"xpnlogic"  	SRVGRP="FGGRP"        SRVID=400		RQADDR=XPNLOGIC_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -pL50,60:100,2 -- -m 1000 -B {{bolag_F}} -C xpnlogic.cfg -M {{ubbMachines}} -F XpnFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		MIN=2	MAX=3
+		
+"xpnlogic"  	SRVGRP="MCGRP"        SRVID=410		RQADDR=XPNLOGIC_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -pL50,60:100,2 -- -m 1000 -B {{bolag_M}} -C xpnlogic.cfg -M {{ubbMachines}} -F XpnMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		MIN=2	MAX=5
+		
+"xpnlogic"  	SRVGRP="NAGRP"        SRVID=420		RQADDR=XPNLOGIC_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -pL50,60:100,2 -- -m 1000 -B {{bolag_N}} -C xpnlogic.cfg -M {{ubbMachines}} -F XpnNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		MIN=2	MAX=3
+		
+"xpnlogic"  	SRVGRP="PCGRP"        SRVID=430		RQADDR=XPNLOGIC_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -pL50,60:100,2 -- -m 1000 -B {{bolag_P}} -C xpnlogic.cfg -M {{ubbMachines}} -F XpnPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+		MIN=2	MAX=3
+
+"lprisoraserver"	SRVGRP="ORAGRP"		SRVID=450	RQADDR=LPRISORASERVER
+		CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -C lprisoraserver.cfg -D{{xpris_tnsnames_entry}} -F Lprisora_ -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xS "
+
+"lprislogic"	SRVGRP="FGGRP"		SRVID=460	RQADDR=LPRISLOGIC_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C lprislogic.cfg -M {{ubbMachines}} -F LprisFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lprislogic"	SRVGRP="MCGRP"          SRVID=470       RQADDR=LPRISLOGIC_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C lprislogic.cfg -M {{ubbMachines}} -F LprisMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lprislogic"    SRVGRP="NAGRP"          SRVID=480       RQADDR=LPRISLOGIC_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C lprislogic.cfg -M {{ubbMachines}} -F LprisNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lprislogic"    SRVGRP="PCGRP"          SRVID=490       RQADDR=LPRISLOGIC_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C lprislogic.cfg -M {{ubbMachines}} -F LprisPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"slutfor"	SRVGRP="FGGRP"          SRVID=700       RQADDR=SLUTFOR_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C slutfor.cfg -M {{ubbMachines}} -F SlutFG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"slutfor"       SRVGRP="MCGRP"          SRVID=710       RQADDR=SLUTFOR_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C slutfor.cfg -M {{ubbMachines}} -F SlutMC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"slutfor"       SRVGRP="NAGRP"          SRVID=720       RQADDR=SLUTFOR_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C slutfor.cfg -M {{ubbMachines}} -F SlutNA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"slutfor"       SRVGRP="PCGRP"          SRVID=730       RQADDR=SLUTFOR_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C slutfor.cfg -M {{ubbMachines}} -F SlutPC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lojavtallogic"	SRVGRP="FGGRP"		SRVID=800	RQADDR=LOJAVTAL_FG
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_F}} -C lojavtallogic.cfg -M {{ubbMachines}} -F lojavtallogic_FG_ -D {{bolag_F_D}} -U {{bolag_F_user}} -P {{bolag_F_pwd}} -a LOKAP,LOKSP,SOE96 -xS " 
+
+"lojavtallogic" SRVGRP="MCGRP"          SRVID=805       RQADDR=LOJAVTAL_MC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_M}} -C lojavtallogic.cfg -M {{ubbMachines}} -F lojavtallogic_MC_ -D {{bolag_M_D}} -U {{bolag_M_user}} -P {{bolag_M_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lojavtallogic" SRVGRP="NAGRP"          SRVID=810       RQADDR=LOJAVTAL_NA
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_N}} -C lojavtallogic.cfg -M {{ubbMachines}} -F lojavtallogic_NA_ -D {{bolag_N_D}} -U {{bolag_N_user}} -P {{bolag_N_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"lojavtallogic" SRVGRP="PCGRP"          SRVID=815       RQADDR=LOJAVTAL_PC
+		CLOPT="-r -e {{base_folder}}/domains/tuxtcn/appdir/log/stderr -- -m 1000 -B {{bolag_P}} -C lojavtallogic.cfg -M {{ubbMachines}} -F lojavtallogic_PC_ -D {{bolag_P_D}} -U {{bolag_P_user}} -P {{bolag_P_pwd}} -a LOKAP,LOKSP,SOE96 -xS "
+
+"xpnstatreport"	SRVGRP="ORAGRP"		SRVID=820	RQADDR=XPNSTATREPORT MIN=1 MAX=1
+		CLOPT="-r -A -- -m200 -C xpnstatreport.cfg -D{{xpris_tnsnames_entry}} -F XpnReport -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xST "
+
+"oraserver"     SRVGRP="ORAGRP" 	SRVID=830	RQADDR=XPNAM
+		CLOPT="-A -- -m200 -C xpnam.cfg -D{{xpris_tnsnames_entry}} -F oraserver_Am -M {{ubbMachines}} -U {{xprisDbUser}} -P {{xprisDbPass}} -xST "
+
+
+
+DEFAULT:
+
+"xprisauth"    SRVGRP="AUTHGRP"           SRVID=510
+                CLOPT="-A -r -e {{base_folder}}/domains/tuxtcn/log/stderr -- -T XPRIS -U XPRISST
+                -P oraxpris  -F AuthLog -S ALL"
+                MIN=2 MAX=2 RESTART=Y MAXGEN=10
+                
+"TMMETADATA"    SRVGRP="JOLTGRP"        SRVID=51
+        CLOPT="-A -- -f {{base_folder}}/domains/tuxtcn/appdir/jrep/xprismeta.data -r "
+        RQPERM=0666     REPLYQ=N        SECONDARYRQ=N   RPPERM=0666     MIN=1   MAX=1   CONV=N
+        SYSTEM_ACCESS=FASTPATH
+        MAXGEN=1        GRACE=86400     RESTART=N
+        MINDISPATCHTHREADS=0    MAXDISPATCHTHREADS=1    THREADSTACKSIZE=0
+        SICACHEENTRIESMAX="500"
+
+
+JSL             SRVGRP=JOLTGRP SRVID=530
+                CLOPT="{{jslClopt}}"
+                
+
+WSL             SRVGRP=WSLGRP   SRVID=540
+                CLOPT=" -A -- -n //{{ ansible_nodename }}:45500 -d /dev/tcp -m 1 -x 10"
+
+TMUSREVT        SRVGRP=SYSGRP   SRVID=550       RESTART=Y       MAXGEN=5        GRACE=3600
+
+DMADM           SRVGRP=DMGRP  SRVID=600
+                REPLYQ = N RESTART = N GRACE = 0
+
+GWADM           SRVGRP=PUBGRP   SRVID=650
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=PUBGRP   SRVID=660
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=TXNGRP   SRVID=610
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=TXNGRP   SRVID=620
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=TADGRP   SRVID=630
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=TADGRP   SRVID=640
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=SANDGRP   SRVID=631
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=SANDGRP   SRVID=641
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=KWGRP   SRVID=1010
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=KWGRP   SRVID=1011
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=WLGRP   SRVID=1020
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=WLGRP   SRVID=1021
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=AKFGRP   SRVID=1030
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=AKFGRP   SRVID=1031
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=TXNGRP2   SRVID=1040
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=TXNGRP2   SRVID=1041
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWADM           SRVGRP=THOLGRP   SRVID=1042
+                REPLYQ = Y RESTART = N GRACE = 0
+
+GWTDOMAIN       SRVGRP=THOLGRP   SRVID=1043
+                REPLYQ = Y RESTART = N GRACE = 0
+
+*SERVICES
+"LogServer"
+        LOAD=50 PRIO=50
+        BUFTYPE="ALL"
+        TRANTIME=30
+        AUTOTRAN=N
+
+
+*ROUTING

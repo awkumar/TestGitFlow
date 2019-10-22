@@ -1,0 +1,17 @@
+# Here are variables related to the Tomcat installation
+
+tomcat_java_version: "1.8.0"
+
+tomcat_version: "tomcat-8"
+tomcat_revision: "8.5.11"
+
+# This will configure a default manager-gui user:
+
+tomcat_admin_username: admin
+tomcat_admin_password: adminsecret
+
+
+TCN_PORT_HTTP: 32025
+TCN_PORT_HTTPS: 8443
+TCN_PORT_AJP: 8009
+TCN_PORT_SHUTDOWN: 8005

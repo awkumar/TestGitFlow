@@ -1,0 +1,133 @@
+
+export LANG=en_US.iso88591
+
+# Common installations
+export ORACLE_BASE={{base_folder}}/oracle
+export MIMERDIR={{base_folder}}/{{mimer_path}}
+export TUXDIR={{base_folder}}/{{tuxedo_path}}
+
+export XBASST_DBLOGIN='USERID={{xprisAuthUser}}/{{xprisAuthPass}}@{{xprisAuthSID}}'
+export XBAS_DBLOGIN='USERID={{xprisDbUser}}/{{xprisDbPass}}@{{xprisDbSID}}'
+
+export NBAS_DBLOGIN='USERID=NATBUTV/T5T_NATBUTV@XBASTST'
+
+export QUEUE_EMAIL=Y
+
+
+
+# Oracle stuff
+#. {{base_folder}}/{{oracle_path}}/CLIENT..oracle_env
+#ORACLE
+ORACLE_HOME=$ORACLE_BASE/product/12.1.0/client_1
+export ORACLE_HOME
+ORACLE_SID=CLIENT
+export ORACLE_SID
+ORA_NLS10=$ORACLE_HOME/nls/data
+export ORA_NLS10
+NLS_LANG=american_america.WE8ISO8859P1
+export NLS_LANG
+NLS_DATE_FORMAT='YYYY-MM-DD HH24:MI:SS'
+export NLS_DATE_FORMAT
+TNS_ADMIN=$ORACLE_BASE/local/$ORACLE_SID
+export TNS_ADMIN
+PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch:/usr/ccs/bin:/usr/openwin/bin:/etc:$PATH
+export PATH
+LD_LIBRARY_PATH=$ORACLE_HOME/lib:/usr/openwin/lib:/usr/dt/lib
+export LD_LIBRARY_PATH
+ORACLE_TERM=vt100
+export ORACLE_TERM
+export APPL={{base_folder}}/domains/tuxtcn/appdir/log
+
+# Sybase stuff
+. {{base_folder}}/sybase/SYBASE.sh
+export OUID='{{xprisDbUser}}/{{xprisDbPass}}@{{xprisDbSID}}'
+#
+# Sybase Product Environment variables
+#
+INCLUDE="{{base_folder}}/sybase/OCS-15_0/include":$INCLUDE
+export INCLUDE
+LIB="{{base_folder}}/sybase/OCS-15_0/lib":$LIB
+export LIB
+PATH="{{base_folder}}/sybase/OCS-15_0/bin":$PATH./:
+export PATH
+LD_LIBRARY_PATH="{{base_folder}}/sybase/OCS-15_0/lib:{{base_folder}}/sybase/OCS-15_0/lib3p64:{{base_folder}}/sybase/OCS-15_0/lib3p":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+LD_LIBRARY_PATH="{{base_folder}}/sybase/DataAccess/ODBC/lib":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+LD_LIBRARY_PATH="{{base_folder}}/sybase/DataAccess64/ODBC/lib":$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH
+SYBASE="{{base_folder}}/sybase"
+export SYBASE
+SYBASE_OCS="OCS-15_0"
+export SYBASE_OCS
+
+export EDITOR=vi
+export PATH=$TUXDIR/bin:$PATH:$HOME/bin:$JAVA_HOME/bin:$ANT_HOME/bin
+
+export WORKING={{base_folder}}/domains/tuxtcn/dev
+export NMS=YES
+export LDOPTS=+s
+export HWDEPLIB='-lnsl'
+
+export ORA8=Y
+
+#RANS
+export RANSDIR={{base_folder}}/RANS
+
+export LD_LIBRARY_PATH=$TUXDIR/lib:{{tuxtcndom}}/dev/sllib:{{tuxtcndom}}/appdir/lib/xpnlib:{{tuxtcndom}}/appdir/lib/folib:{{base_folder}}/{{mimer_path}}//lib:$LD_LIBRARY_PATH
+
+
+
+
+
+#TUXEDO
+
+export TUXDOM={{tuxtcndom}}/appdir
+export APPDIR=${TUXDOM}/bin
+export APP_PW=TUXEDO
+export TUXCONFIG=${TUXDOM}/cfg/tuxconfig
+export BDMCONFIG=$TUXDOM/cfg/bdmconfig
+export FIELDTBLS32=Usysfl32,lobas.tbl,generalfml.tbl
+export FLDTBLDIR32=${TUXDOM}/fml:$TUXDIR/udataobj
+export ORADIR=$ORACLE_HOME
+export ORAHOME=$ORACLE_HOME
+export ORACLE_TERM=vt220
+export NLS_LANG=swedish_sweden.we8iso8859p15
+export PATH=$PATH:~/bin
+export OLTP_USERID=IPRIS
+export OLTP_CLIENT=IPRIS1
+export OLTP_BOLAG=TT
+export OLTP_PASSW=ANINGAR
+export OLTP_NPASSW=KALLE
+export SMTP_ADRESS=mail.telia.se
+export FBR_TEXT_FILE=$APPDIR/datafiler/fbr_text_file.dat
+export FBRT_PRIS=$APPDIR/datafiler/fbrt_pris.dat
+export FBRX_PRIS=$APPDIR/datafiler/fbrx_pris.dat
+export XPRWWWROOT=http://{{ ansible_nodename }}:{{TCN_PORT_HTTP}}/
+export XPRDATAFIL={{base_folder}}/domains/jboss/
+export XPRFILPATH=xprisdata/
+export LOGPATH=$TUXDOM/log
+export RTFPATH=$APPDIR/datafiler
+export CONFIGPATH=$TUXDOM/cfg
+export VERSION_FILE=$APPDIR/datafiler/version.txt
+export TEMPDIR=$TUXDOM/temp
+export NYASPARA=1
+export PROD_FROM_PROMIS=N
+export FORWARD_BOLAG=FG
+export ULOG=`date "+$TUXDOM/log/ULOG.%m%d%y"`
+export OLDISDNEMAIL=YES
+export AODI_TEST=YES
+export QMCONFIG=$TUXDOM/cfg/bqmconfig
+# Trying to free memory that has been statically allocated
+# Worked on HP-UX but linux is pickier
+export MALLOC_CHECK_=0
+export RANSDIR={{base_folder}}/RANS
+#ulimit -c unlimited
+
+alias tmfind='echo "psc" | tmadmin | grep -i'
+
+
+#Application specific parameters moved to ENVFILE
+
+
+

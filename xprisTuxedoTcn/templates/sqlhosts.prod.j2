@@ -1,0 +1,147 @@
+-------------------------------------------------------------------------------
+--
+--  sqlhosts
+--
+--  This file contains a list of all accessible local and remote databases
+--  on a node.
+--
+--  In a VAX/VMS environment the file is placed in the directory MIMLIB7.
+--  On UNIX and PC the file is stored in /etc.
+--
+--  On VAX/VMS the database can be specified by setting the logical name
+--  MIMER_DATABASE to the name of the database. On UNIX and PC an 
+--  environment symbol MIMER_DATABASE is set to the name of the database.
+--
+-------------------------------------------------------------------------------
+--
+--  DEFAULT is the database used if MIMER_DATABASE is not found.
+--  Can be a defined local or remote database name.
+--
+--      DATABASE
+--      --------
+DEFAULT:
+        LOK_FFU
+-------------------------------------------------------------------------------
+--
+--  LOCAL is a list of all local databases on the current node.
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+LOCAL:
+	SINGLE		.
+	single		.
+--
+--  VAX/VMS examples
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+--      PRODUCTION      DISK:<DIRECTORY>
+--
+--  UNIX examples
+--
+--      DATABASE        MULTISYSTEM DIRECTORY
+--      --------        ---------------------
+--      multi1          /usr/multi1/multi
+--      HOTELDB         /usr/multi1/multi
+--      muldev          /usr/muldev/multi:/opt/db_dir
+-------------------------------------------------------------------------------
+--
+--  REMOTE is a list of all remote databases. The following examples are the
+--  same on both VAX/VMS and UNIX. The only difference is that a
+--  UNIX system does not support DECNET.
+--
+--  Interface and service may de defaulted. Default is chosen by entering ''.
+--  Default depends on protocol and the machine used.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+REMOTE:
+
+--
+--  DECNET examples:
+--      INTERFACE is currently ignored. $QIO is always used.
+--
+--      SERVICE corresponds to NCP object or command procedure used by
+--      network server.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+--      PRODUCTION      ODEN    DECNET   ''             MIMER
+--      INVENTORY       INV     DECNET   ''             ''
+--
+--  TCP/IP examples
+--      INTERFACE is the TCP/IP product used on VAX/VMS. On UNIX this
+--      signifies which network interface to use, such as socket interface,
+--      X/OPENs transport interface (xti) or OSI transport layer interface
+--      (tli).
+--
+--      SERVICE corresponds to the port number used in TCP/IP. The port
+--      number may either be a number or a name of a service stored in 
+--      /etc/services.
+--
+--      DATABASE        NODE    PROTOCOL INTERFACE      SERVICE
+--      --------        ----    -------- ---------      -------
+--      VAX_TEST        oden    tcp      wollongong     mimer
+--      DIAB_DEMO       ds90    tcp      tli            1360
+--      HP_TEST         hp      tcp      xti            mimer
+--	SUN_SERVER      solen   tcp      socket         mimer
+--	IBM_DB          rs6000  tcp      ''             mimer
+--	LOK_FFU		roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_FFX		roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_FMX		roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_FPX		roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_TOFS	roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_TOFU	roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_TOSY	roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_UTV		roman2.kal.data.telia.se	tcp	''	1360
+--	LOK_TUX		klok01.data.telia.se		tcp	''	1360
+	RLOK_TOPP	klok01.data.telia.se		tcp	''	1360	LOK_TOPP
+	RLOK_MC		klok01.data.telia.se		tcp	''	1360	LOK_MC
+	RLOK_PC		klok01.data.telia.se		tcp	''	1360	LOK_PC
+	RLOK_FG		klok01.data.telia.se		tcp	''	1360	LOK_FG
+	RLOK_NA		klok01.data.telia.se		tcp	''	1360	LOK_NA
+	RLOK_CFD	klok01.data.telia.se		tcp	''	1360	LOK_CFD
+	LOK_FA1         kdecu2.kal.telia.se             tcp     ''      1360
+        LOK_MA1         kdecu2.kal.telia.se             tcp     ''      1360
+        LOK_PA1         kdecu2.kal.telia.se             tcp     ''      1360
+        LOK_TUX         klok01.data.telia.se            tcp     ''      1360
+        LOK_TOFT        klok01.data.telia.se            tcp     ''      1360
+	FO_RLOK_TOPP	klok01.data.telia.se		tcp	''	1362	LOK_TOPP
+	FO_RLOK_MC	klok01.data.telia.se		tcp	''	1362	LOK_MC
+	FO_RLOK_PC	klok01.data.telia.se		tcp	''	1362	LOK_PC
+	FO_RLOK_FG	klok01.data.telia.se		tcp	''	1362	LOK_FG
+	FO_RLOK_NA	klok01.data.telia.se		tcp	''	1362	LOK_NA
+	FO_RLOK_CFD	klok01.data.telia.se		tcp	''	1362	LOK_CFD
+	FPP_RLOK_TOPP   klok01.data.telia.se            tcp     ''      1364    LOK_TOPP
+        FPP_RLOK_MC     klok01.data.telia.se           tcp     ''      1364    LOK_MC
+        FPP_RLOK_PC     klok01.data.telia.se           tcp     ''      1364    LOK_PC
+        FPP_RLOK_FG     klok01.data.telia.se           tcp     ''      1364    LOK_FG
+        FPP_RLOK_NA     klok01.data.telia.se           tcp     ''      1364    LOK_NA
+	LOK_MSF         kdecu1.kal.telia.se             tcp     ''      1360
+        LOK_PSF         kdecu1.kal.telia.se             tcp     ''      1360
+        LOK_NSF         kdecu1.kal.telia.se		tcp     ''      1360
+        LOK_FSF         kdecu1.kal.telia.se            	tcp     ''      1360
+        LOK_TSF         kdecu1.kal.telia.se           	tcp     ''      1360
+	XPR_RLOK_TOPP	klok01.data.telia.se            tcp     ''      1365    LOK_TOPP
+        XPR_RLOK_MC	klok01.data.telia.se            tcp     ''      1365    LOK_MC
+        XPR_RLOK_PC	klok01.data.telia.se            tcp     ''      1365    LOK_PC
+        XPR_RLOK_FG	klok01.data.telia.se            tcp     ''      1365    LOK_FG
+        XPR_RLOK_NA	klok01.data.telia.se            tcp     ''      1365    LOK_NA
+	XPR_RLOK_CFD	klok01.data.telia.se		tcp	''	1365	LOK_CFD
+	AK_RLOK_CFD	klok01.data.telia.se		tcp	''	1367	LOK_CFD
+	WO_RLOK_TOPP	klok01.data.telia.se            tcp     ''      1366    LOK_TOPP
+        WO_RLOK_MC	klok01.data.telia.se           tcp     ''      1366    LOK_MC
+        WO_RLOK_PC	klok01.data.telia.se           tcp     ''      1366    LOK_PC
+        WO_RLOK_FG	klok01.data.telia.se           tcp     ''      1366    LOK_FG
+        WO_RLOK_NA	klok01.data.telia.se           tcp     ''      1366    LOK_NA
+        LOB_RLOK_MC	klok01.data.telia.se           tcp     ''      1371    LOK_MC
+        LOB_RLOK_PC	klok01.data.telia.se           tcp     ''      1371    LOK_PC
+        LOB_RLOK_FG	klok01.data.telia.se           tcp     ''      1371    LOK_FG
+        LOB_RLOK_NA	klok01.data.telia.se           tcp     ''      1371    LOK_NA
+	KW_RLOK_MC      klok01.data.telia.se           tcp     ''      1362    LOK_MC
+        KW_RLOK_PC      klok01.data.telia.se           tcp     ''      1362    LOK_PC
+        KW_RLOK_FG      klok01.data.telia.se           tcp     ''      1362    LOK_FG
+        KW_RLOK_NA      klok01.data.telia.se           tcp     ''      1362    LOK_NA
+        KW_RLOK_TOPP    klok01.data.telia.se            tcp     ''      1362    LOK_TOPP
+
+-------------------------------------------------------------------------------

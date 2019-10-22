@@ -1,0 +1,30 @@
+# General configuration for the init.d scripts,
+# not necessarily for JBoss AS itself.
+# default location: /etc/default/wildfly
+
+## Location of JDK
+JAVA_HOME="{{ java_home }}"
+
+## Location of WildFly
+JBOSS_HOME={{base_folder}}/jboss/current
+
+## The username who should own the process.
+JBOSS_USER="{{ app_user }}"
+
+## The mode WildFly should start, standalone or domain
+JBOSS_MODE=standalone
+
+#Parameter needed to be set per standalone installation for example test11,test12....
+JBOSS_INSTANCE={{base_folder}}/domains/jboss
+
+## Configuration for standalone mode
+JBOSS_CONFIG=standalone-full.xml
+
+## The amount of time to wait for startup
+STARTUP_WAIT=60
+
+## The amount of time to wait for shutdown
+SHUTDOWN_WAIT=60
+
+## Additionals args to include in startup
+JBOSS_OPTS="-P={{base_folder}}/domains/jboss/configuration/env.properties -Djboss.bind.address={{ ansible_nodename }} -Djboss.bind.address.management={{ ansible_nodename }} -Djboss.server.base.dir=${JBOSS_INSTANCE}"

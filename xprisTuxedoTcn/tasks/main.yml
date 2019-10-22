@@ -1,0 +1,25 @@
+- name: Create directories for tuxtcn
+  become_user: "{{app_user}}"
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{tuxtcndom}}', mode: '0775' }
+     - { path: '{{appdir}}', mode: '0775' }
+     - { path: '{{appdir}}/bin', mode: '0775' }
+     - { path: '{{appdir}}/cfg', mode: '0775' }
+     - { path: '{{appdir}}/lib', mode: '0775' }
+     - { path: '{{appdir}}/fml', mode: '0775' }
+     - { path: '{{appdir}}/ud', mode: '0775' }
+     - { path: '{{appdir}}/jrep', mode: '0775' }
+     - { path: '{{appdir}}/log', mode: '0775' }
+     - { path: '{{appdir}}/tlog', mode: '0775' }
+     - { path: '{{appdir}}/script', mode: '0775' }
+     
+- include: config.yml
+  become_user: '{{app_user}}'
+  tags: prepare-env, tuxtcn
+
+- include: crontab.yml
+  become_user: '{{app_user}}'
+  tags: prepare-env
+  when:  isProduction == false
+  

@@ -1,0 +1,134 @@
+#!/bin/bash 
+
+. {{tuxtcndom}}/setenv
+
+##  This shall cover compile tuxedo code and move it to appdir
+
+#
+# ENV settings
+#
+
+usage()
+{
+	echo
+	echo " Usage `basename $0` deploy PROJECTNR"
+	echo "   Example `basename $0` deploy 1020"
+	echo "     -takes latest Tuxedo sourcecode "
+        echo "      for PROJECTNR and "
+        echo "      compiles and moves to appdir"
+	echo
+	exit 0
+}
+
+return_code()
+{
+  RETURN_VALUE=$?
+  if [ $RETURN_VALUE -ne 0 ]; then 
+    logit "Failed with $RETURN_VALUE"
+    finnish
+    exit $RETURN_VALUE
+  fi
+}
+
+check_time()
+{
+  INTIME=$1
+  if [ ! $INTIME ]; then
+    INHOUR=$(echo $INTIME | cut -d':' -f1 | wc -m)
+    if [ $INHOUR -ne 3 ]; then 
+      echo 1
+    else 
+      echo 0
+    fi
+  fi
+}
+
+init()
+{
+  # create logfile, rotate if exist create date entry.
+  LOG_FILE={{base_folder}}/log/tuxlog_$LEVVERS
+  DATE=$(date "+%Y%m%d")
+  if [ -f $LOG_FILE ]; then
+    cp ${LOG_FILE} ${LOG_FILE}_${DATE}
+    rm ${LOG_FILE}
+  fi
+  logit "$DATE "
+  logit "$(basename ${0}) started."
+}
+
+logit()
+{
+  printf "$(date "+%H:%M:%S.%N"): ${1}\n" | tee -a $LOG_FILE 
+}
+
+source_env() {
+logit "source_env start"
+. {{tuxtcndom}}/setenv > /dev/null 2>&1
+#
+# source dev
+#
+cd {{DEV_TCN_DIR}}/script
+pwd
+
+logit "source_env exit"
+}
+
+
+compile_source() 
+{ 
+  source_env
+  logit "makeserver clean start"
+  CMD=$(makeserver clean 2>&1)
+  return_code
+  logit "$CMD"
+  logit "makeserver clean done"
+  logit "makeserver recompile start"
+  CMD=$(makeserver recompile  2>&1)
+  return_code
+  logit "$CMD"
+  logit "makeserver recompile done"
+  logit "makeserver start"
+  CMD=$(makeserver 2>&1)
+  return_code
+  logit "$CMD"
+  logit "makeserver done"
+  grep -e ' Error ' $LOG_FILE
+  ERROR_CHECK=$?
+  if [ $ERROR_CHECK -eq 1 ]; then
+    logit "No errors found. ( searching for Error in $LOG_FILE )"
+  else
+    logit "ERRORS found in $LOG_FILE !!!"
+    finnish
+    exit 1234
+  fi
+}
+
+finnish()
+{
+  logit "$0 Done."
+  logit "Logfile: $LOG_FILE" 
+}
+
+
+### MAIN ###
+if [ $# -lt 1  ]; then
+  usage
+fi
+
+if [ "$1" = "check" ]; then
+  echo {{appdir}}
+  exit 0
+elif [ "$1" = "deploy" ]; then
+  if [ "$2" = "" ]; then
+    echo " EMPTY ARG for projectversion ... "
+    usage
+  fi
+  # The arguments are ok lets remap them to proper names
+  LEVVERS=$2
+  init
+  compile_source
+  finnish
+  exit 0
+else
+  usage
+fi

@@ -1,0 +1,114 @@
+- name: Create Directories TomCat
+  file: path={{ item.path }} state=directory recurse=true owner={{ item.owner | default( app_user ) }} group={{app_group}} mode={{ item.mode }}
+  with_items:
+     - { path: '{{base_folder}}/domains/tomxpnportal', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/conf', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/conf/Catalina', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/conf/Catalina/localhost', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/logs', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/temp', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/work', mode: '0775' }
+     - { path: '{{base_folder}}/domains/tomxpnportal/webroot/webapps', mode: '0775' }
+
+
+- name: Upload environments.xml
+  template:
+    src:   "environments.xml.j2"
+    dest:  "{{base_folder}}/domains/tomxpnportal/webroot/webapps/environments.xml"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  tags: environments
+
+   
+- name: Upload calendar.txt 
+  template:
+    src:   "calendar.txt.j2"
+    dest:  "{{base_folder}}/domains/tomxpnportal/webroot/webapps/calendar.txt"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Upload driftInfo.txt 
+  template:
+    src:   "driftInfo.txt.j2"
+    dest:  "{{base_folder}}/domains/tomxpnportal/webroot/webapps/driftInfo.txt"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+    
+- name: Copy/Deploy latest War Jenkins has build for Xpnportalen
+  copy:
+    src:   "{{base_folder}}/jenkins/jobs/XPN portal/lastStable/archive/war/xpnportal.war"
+    dest:  "{{base_folder}}/domains/tomxpnportal/webroot/webapps"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+
+- name: Copy conf folder
+  command: cp -r {{base_folder}}/tomcat/current/conf/{{ item }} {{base_folder}}/domains/tomxpnportal/webroot/conf/
+  with_items:
+   - "catalina.policy"
+   - "catalina.properties"
+   - "jaspic-providers.xml"
+   - "jaspic-providers.xsd"
+   - "logging.properties"
+   - "tomcat-users.xsd"
+   - "web.xml"
+
+- name: Updating server.xml
+  template: src=server.xml.j2 dest={{base_folder}}/domains/tomxpnportal/webroot/conf/
+  notify: restart tomxpnportal
+  
+- name: Configure context.xml
+  template: src=context.xml.j2 dest={{base_folder}}/domains/tomxpnportal/webroot/conf/context.xml
+  notify: restart tomxpnportal
+
+- name: Configure Tomcat users
+  template: src=tomcat-users.xml dest={{base_folder}}/domains/tomxpnportal/webroot/conf/
+  notify: restart tomxpnportal
+  
+- name: Install Tomcat init script for tomxpnportal
+  template: src=tomxpnportal.service dest=/etc/systemd/system/tomxpnportal.service
+  become: True
+  become_user: root
+  become_method: sudo
+  notify: restart tomxpnportal
+
+- name: add branch version to variables for env
+  lineinfile: dest='{{ansible_home}}/roles/tomcatXpnPortal/vars/main.yml' regexp="^{{env}}_branch" insertafter="^{{env}}_branch" line="{{env}}_branch{{':'}} {{branch}}" state=present 
+  become: yes
+  become_user: root
+  become_method: sudo
+  tags: environments
+  when: env is defined and branch is defined
+    
+- name: add tcn version to variables for env
+  lineinfile: dest='{{ansible_home}}/roles/tomcatXpnPortal/vars/main.yml' regexp="^{{env}}_tcn_version" insertafter="^{{env}}_tcn_version" line="{{env}}_tcn_version{{':'}} {{tcn_version}}" state=present
+  become: yes
+  become_user: root
+  become_method: sudo
+  tags: environments
+  when: env is defined and tcn_version is defined 
+ 
+
+- name: Upload environments.xml 
+  template:
+    src:   "environments.xml.j2"
+    dest:  "{{base_folder}}/domains/tomxpnportal/webroot/webapps/environments.xml"
+    owner: "{{app_user}}"
+    group: "{{app_group}}"
+    mode: 0775
+  tags: deploy_environments
+  notify: restart tomxpnportal
+  
+- name: Start Tomcat
+  service: name=tomxpnportal state=started enabled=yes
+  become: yes
+  become_user: root
+  become_method: sudo
+
+
+
+ 

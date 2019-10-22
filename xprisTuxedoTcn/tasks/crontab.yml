@@ -1,0 +1,52 @@
+# CRONTAB JOBS
+#[xprisi@sehan9350mwt3 ~]$ crontab -l
+#*/2 * * * * ~xprisi/bin/runbatchTestSendstatusqueueitest.sh > /dev/null
+#00 * * * * ~xprisi/bin/runbatchTestSendcentrexslutfortoXtas.sh > /dev/null
+# Since everything else is down we can shutdown tomcat as well.
+#25 1 * * * (~xprisi/bin/tomcat stop) > /dev/null
+# Starting up tomcat.
+#50 4 * * * (~xprisi/bin/tomcat start) > /dev/null
+# Shutdown wls
+#35 23  * * * ~xprisi/bin/jboss_down_itest.sh > /dev/null
+# Startup wls
+#30 04  * * * ~xprisi/bin/jboss_up_itest.sh > /dev/null
+# Shutdown tuxedo
+#30 23 * * * (~/bin/tuxedo stop itest) > /dev/null 2>&1
+#32 23 * * * (~/bin/tuxedo stop itest_gw) > /dev/null 2>&1
+# Cleanup IPC resources for itest
+#40 23 * * * (~xprisi/bin/ipckill >/dev/null 2>~/ipckill.err; if [ -s ~/ipckill.err ] ; then mail -s "[XPRIS] ipckill xprisi" scm < ~/ipckill.err; fi)
+# Startup tuxedo
+#15 04 * * * (~/bin/tuxedo start itest) > /dev/null 2>&1
+#17 04 * * * (~/bin/tuxedo start itest_gw) > /dev/null 2>&1
+#[xprisi@sehan9350mwt3 ~]$
+
+- name: Shutdown tuxedo tuxtcn
+  become: True
+  become_user: "{{app_user}}"
+  become_method: sudo
+  cron: 
+    name: "Shutdown tuxedo tuxtcn"
+    minute: "30"
+    hour: "23"
+    job: "(~/bin/xpris_tux_tcn_stop) > /dev/null 2>&1"
+
+- name: ipckill
+  become: True
+  become_user: "{{app_user}}"
+  become_method: sudo
+  cron: 
+    name: "ipckill"
+    minute: "40"
+    hour: "23"
+    job: "(~/bin/ipckill.sh >/dev/null 2>~/ipckill.err; if [ -s ~/ipckill.err ] ; then mail -s \"[XPRIS] ipckill xpris\" scm < ~/ipckill.err; fi)"
+
+- name: Startup tuxedo tuxtcn
+  become: True
+  become_user: "{{app_user}}"
+  become_method: sudo
+  cron: 
+    name: "Startup tuxedo tuxtcn"
+    minute: "15"
+    hour: "04"
+    job: "(~/bin/xpris_tux_tcn_start) > /dev/null 2>&1"
+    

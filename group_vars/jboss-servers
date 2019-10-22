@@ -1,0 +1,13 @@
+# Here are variables related to the JBoss installation
+
+inst_root: '/opt/xpris/xpris1/jenkins/workspace/System/installations/'
+
+jboss_revision: "11.0.0.Final"
+
+jboss.http.port: 35025
+jboss.https.port: 35028
+
+jboss.management.http.port: 39900
+jboss.management.https.port: 39993
+
+isProduction: false

@@ -1,0 +1,76 @@
+#!/bin/bash
+
+RUNTIME=`date +'%H%M'`
+
+# functions
+return_code()
+{
+  RETURN_VALUE=$?
+  if [ $RETURN_VALUE -ne 0 ]; then 
+    echo "Failed with $RETURN_VALUE in $ENV"
+  fi
+} 
+
+checktime() {
+# Since Xpris is down between 2230 - 0615 this script should not try to run then. - frepe
+if  [ $RUNTIME -gt 2229 ]; then  # Give it 1 min gracetime before it stops
+    exit 0
+elif [ $RUNTIME -lt 0627 ]; then # Give it 2 min to start
+    exit 0
+fi
+
+if  [ $RUNTIME -gt 2230 ] || [ $RUNTIME -lt 0615 ] ; then
+  exit 0
+fi
+
+}
+
+runbatch_sendstatusqueue() {
+  checktime
+  echo " "
+  echo ----------
+  echo -- $ENV
+  echo ----------
+  /usr/bin/curl -s http://{{ws_backend_server}}:{{ws_backend_port}}/xpnproxy/batch/runbatch.jsp?batchName=sendstatusqueue
+  return_code
+}
+
+runbatch_kundklarerror() {
+  echo " "
+  echo ----------
+  echo -- $ENV
+  echo ----------
+  /usr/bin/curl -s http://{{ws_backend_server}}:{{ws_backend_port}}/xpnproxy/batch/runbatch.jsp?batchName=kundklarerrors
+  return_code
+}
+
+# end functions
+
+
+if [ -z $1 ]; then
+  echo 
+  echo No argument supplied
+  echo Need to know which batch to run ...
+  echo Currently supporting :
+  echo kundklarerrors
+  echo sendstatusqueue
+  echo 
+  exit 1
+else
+  BATCH_TO_RUN=$1
+fi
+
+case $BATCH_TO_RUN in
+  sendstatusqueue)
+    runbatch_sendstatusqueue
+    sleep 2
+    ;;
+  kundklarerrors)
+    runbatch_kundklarerror
+    sleep 2
+    ;;
+  *)
+    echo This batch can NOT be run currently.
+    ;;
+esac
+echo $RUNTIME $BATCH_TO_RUN >> {{base_folder}}/log/sendstatusqueue.log

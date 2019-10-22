@@ -1,0 +1,42 @@
+#!/bin/sh
+export CLEAN=$1
+export Prev=$PWD
+export TUXEDODOMAIN={{tuxtcndom}}
+
+if [ ! -z ${CLEAN} ] && [ "${CLEAN}" = "clean" ]; then
+  printf "\n\n Cleaning out sllib and appdir/server HARD ... \n\n"
+  rm -rf $TUXEDODOMAIN/dev/sllib
+  rm -rf $TUXEDODOMAIN/dev/appdir/server
+fi
+if [ ! -z ${CLEAN} ] && [ "${CLEAN}" = "recompile" ]; then
+  printf "\n\n Recompile detected touching files to recompile ... \n\n"
+  find $TUXEDODOMAIN/dev \( -name '*.c'  \) -exec touch {} \;
+  find $TUXEDODOMAIN/dev \( -name '*.ec' \) -exec touch {} \;
+  find $TUXEDODOMAIN/dev \( -name '*.pc' \) -exec touch {} \;
+  printf "\n\n starting to recompile ... \n\n"
+  CLEAN=
+fi
+
+
+touch ${TUXEDODOMAIN}/makeserver.log
+echo `who -m ` `date`  >> ${TUXEDODOMAIN}/makeserver.log
+
+printf "\n Skapar system under version: ${TUXEDODOMAIN}\n\n"
+
+# Make sure directory sllib and appdir/server exists
+mkdir -p $TUXEDODOMAIN/dev/sllib
+mkdir -p $TUXEDODOMAIN/dev/appdir/server
+
+printf "\n o - Executing makeC \n\n"
+makeC ${CLEAN}
+
+printf "\n o - Executing makeO \n\n"
+makeO ${CLEAN}
+
+printf "\n o - Executing makeX \n\n"
+makeX ${CLEAN}
+
+cd $Prev
+
+printf "\n  --> $(basename $0) done. <-- \n\n"
+# EOF

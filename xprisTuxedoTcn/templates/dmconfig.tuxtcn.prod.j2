@@ -1,0 +1,216 @@
+#
+# TUXEDO DOMAIN CONFIGURATION FILE
+# Xpris internet
+#
+*DM_LOCAL_DOMAINS
+#
+
+#XPRISTXN_XPRISTCN_ToHANNOVER    GWGRP = TXNGRP
+#                                TYPE = TDOMAIN
+#                                BLOCKTIME = 30
+#                                DOMAINID = "XPRISTXN_XPRISTCN_ToHANNOVER"
+
+XPRIS_P1                        GWGRP=TADGRP
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_P1"
+
+XPRIS_XPRIS_ToXPRISPUB          GWGRP=PUBGRP
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_XPRIS_ToXPRISPUB"
+
+#XPRIS_XPRIS_ToSANDRADB          GWGRP=SANDGRP
+#                                TYPE=TDOMAIN
+#                                DOMAINID="XPRIS_XPRIS_ToSANDRADB"
+
+KWPROD_XPRIS_ToKWBAS            GWGRP=KWGRP
+                                TYPE=TDOMAIN
+                                DOMAINID="KWPROD_XPRIS_ToKWBAS"
+
+XPRIS_XPRIS_ToWLADSL            GWGRP=WLGRP
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_XPRIS_ToWLADSL"
+
+#XPRIS_ToXPRISAKF                GWGRP=AKFGRP
+#                                TYPE=TDOMAIN
+#                                DOMAINID="XPRIS_ToXPRISAKF"
+
+XPRIS_ToTXNDOMAIN               GWGRP=TXNGRP2
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_ToTXNDOMAIN"
+
+XPRIS_XPRIS_ToTHOLBOX           GWGRP=THOLGRP
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_XPRIS_ToTHOLBOX"
+
+*DM_REMOTE_DOMAINS
+
+#Remote-domain
+#XPRISTXN_HANNOVER_ToXPRISTCN    TYPE = TDOMAIN
+#                                DOMAINID="XPRISTXN_HANNOVER_ToXPRISTCN"
+
+W3_P1                           TYPE=TDOMAIN
+                                DOMAINID="W3_P1"
+
+W4_P1                           TYPE=TDOMAIN
+                                DOMAINID="W4_P1"
+
+XPRIS_XPRISPUB_ToXPRIS
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_XPRISPUB_ToXPRIS"
+
+XPRIS_SANDRADB_ToXPRIS
+                                TYPE=TDOMAIN
+                                DOMAINID="XPRIS_SANDRADB_ToXPRIS"
+
+KWPROD_KWBAS_ToXPRIS            TYPE=TDOMAIN
+                                DOMAINID="KWPROD_KWBAS_ToXPRIS"
+
+WLADSL                          TYPE=TDOMAIN
+                                DOMAINID="WLADSL"
+
+#XPRISAKF_ToXPRIS                TYPE=TDOMAIN
+#                                DOMAINID="XPRISAKF_ToXPRIS"
+
+TXNDOMAIN_ToXPRIS               TYPE=TDOMAIN
+                                DOMAINID="TXNDOMAIN_ToXPRIS"
+
+XPRIS_THOLBOX_ToXPRIS           TYPE=TDOMAIN
+                                DOMAINID="XPRIS_THOLBOX_ToXPRIS"
+
+*DM_TDOMAIN
+
+#XPRISTXN_XPRISTCN_ToHANNOVER    NWADDR = "//xpristcn.telia.se:12930"
+#                                NWDEVICE = "/dev/null"
+
+#XPRISTXN_HANNOVER_ToXPRISTCN    NWADDR = "//hannover.kal.telia.se:15020"
+#                                NWDEVICE = "/dev/tcp"
+
+XPRIS_P1                        NWADDR="//xpristcn.telia.se:4440"      NWDEVICE = "/dev/null"
+
+W3_P1                   NWADDR="//sehan5002astux3.han.telia.se:44401"
+W4_P1                   NWADDR="//sehan5002astux4.han.telia.se:44401"
+
+XPRIS_XPRIS_ToXPRISPUB  NWADDR="//xpristcn.telia.se:4443"      NWDEVICE = "/dev/null"
+
+XPRIS_XPRISPUB_ToXPRIS  NWADDR="//xpristcn.telia.se:4444"      NWDEVICE = "/dev/null"
+
+#XPRIS_XPRIS_ToSANDRADB          NWADDR ="//xpristcn.telia.se:33080"
+#XPRIS_SANDRADB_ToXPRIS          NWADDR ="//sandra-db.kal.telia.se:33080"
+
+KWPROD_KWBAS_ToXPRIS            NWADDR ="//kundweb.kal.telia.se:15550"
+KWPROD_XPRIS_ToKWBAS            NWADDR ="//xpristcn.telia.se:15551"
+
+XPRIS_XPRIS_ToWLADSL            NWADDR ="//xpristcn.telia.se:15552"
+WLADSL                          NWADDR ="//xpristcn.telia.se:15553"
+
+#XPRIS_ToXPRISAKF                NWADDR ="//xpristcn.telia.se:25121"
+#XPRISAKF_ToXPRIS                NWADDR ="//xpristcn.telia.se:25120"
+
+XPRIS_ToTXNDOMAIN               NWADDR="//xpristcn.telia.se:14310"
+TXNDOMAIN_ToXPRIS               NWADDR="//xpristcn.telia.se:15310"
+
+XPRIS_XPRIS_ToTHOLBOX           NWADDR="//xpristcn.telia.se:15554"
+XPRIS_THOLBOX_ToXPRIS           NWADDR="//sprinta.kal.telia.se:40116"
+
+*DM_REMOTE_SERVICES
+
+#Importerade tjänster från TAD
+
+TadIprStidOLTP  AUTOTRAN=N
+        CONV=N
+        LOAD=50
+        PRIO=50
+        RDOM=W4_P1
+        LDOM=XPRIS_P1
+        RNAME="BPZ600"
+        TRANTIME=30
+        API=ATMI
+        FUNCTION=APPC
+
+TadBPX230OLTP
+        RDOM=W4_P1
+        LDOM=XPRIS_P1
+        RNAME="BPZ230"
+
+TPUCASE
+        RDOM=W4_P1
+        LDOM=XPRIS_P1
+
+
+#Importerad tjänster från Sandra-db
+#TolkOrderSparaL RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkOrderSparaL
+
+#TolkStatHamtaL  RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkStatHamtaL
+
+#TolkOnrHamtaL   RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkOnrHamtaL
+
+#TolkMakuleraL   RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkMakuleraL
+
+#TolkMakPurchL   RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkMakPurchL
+
+#TolkPOnrHamtaL  RDOM=XPRIS_SANDRADB_ToXPRIS
+#                LDOM=XPRIS_XPRIS_ToSANDRADB
+#                RNAME=TolkPOnrHamtaL
+
+#Importerade tjänster från Tholbox
+CheckHaspL      RDOM=XPRIS_THOLBOX_ToXPRIS
+                LDOM=XPRIS_XPRIS_ToTHOLBOX
+                RNAME=CheckHaspL
+
+SparaExtBestL   RDOM=XPRIS_THOLBOX_ToXPRIS
+                LDOM=XPRIS_XPRIS_ToTHOLBOX
+                RNAME=SparaExtBestL
+
+*DM_LOCAL_SERVICES
+BasprisCalcLFG          RNAME="BasprisCalcL"
+LprisLedningL
+IPrisberNyL
+ForwardL
+ToppkundDSK
+ToppAnlDSS
+NmsGetCustL
+FlexAdressLFG           RNAME="FlexAdressL"
+StatOffertDUK
+"12854FG"               RNAME="LprisBeraknaLF"
+"12854PC"               RNAME="LprisBeraknaLP"
+"12854MC"               RNAME="LprisBeraknaLM"
+"12854NA"               RNAME="LprisBeraknaLN"
+TolkOrderSparaL
+KundSokExtL
+KundHAdressExtL
+IprisForfraganL
+IprisOffertL
+"9369FG"                RNAME="PnrCfdAdrSokL"
+"9498FG"                RNAME="NaromradeSokL"
+"12750FG"               RNAME="XpnAdressHamtaL"
+"9492FG"                RNAME="PostnrSokL"
+AdressSokL
+TcnForwardL
+GiltigaBolagL
+XpnEibKompUpdL
+
+KoordAdressC
+AvstmatC
+#BPX600
+#BPX230
+
+TadIprStidOLTP  RNAME=BPX600
+TadBPX230OLTP   RNAME=BPX230
+
+CheckHaspL
+XbasParameter
+TicftlgDSS
+
+
+
+

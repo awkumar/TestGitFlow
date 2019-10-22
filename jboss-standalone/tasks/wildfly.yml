@@ -1,0 +1,40 @@
+###
+# Installs WildFly as a Linux service
+###
+
+- name: Copy init.d script
+  template:
+    src: wildfly-init-redhat.sh.j2
+    dest: /etc/init.d/wildfly
+    mode: u=rwx,g=rx,o=rx
+
+- name: Make sure service config directory exists
+  file:
+    path: /etc/default
+    state: directory
+    mode: u=rwx,g=rx,o=rx
+
+- name: Copy WildFly service config
+  template:
+    src: wildfly.conf.j2
+    dest: /etc/default/wildfly.conf
+    mode: u=rw,g=r,o=r
+
+- name: Check if WildFly service exists
+  shell: "if chkconfig --list wildfly > /dev/null 2>&1; then echo true; else echo false; fi;"
+  register: chkconfig_exists
+
+- name: Add WildFly service
+  shell: "chkconfig --add wildfly"
+  #when: not chkconfig_exists
+
+- name: Enable WildFly service
+  shell: "chkconfig wildfly on"
+  #when: not chkconfig_exists
+
+- name: Reload systemd config
+  systemd:
+    name: wildfly
+    daemon_reload: yes
+  #when: not chkconfig_exists
+

@@ -1,0 +1,15 @@
+svn_repo: http://xp001xprissvn.ddc.teliasonera.net/svn
+svn_user: MrJenkins
+svn_pass: MrJenkins
+
+base_root: /opt/xpris
+base_folder: "{{base_root}}"
+
+oracle_path: oracle/product/12.1.0/client_1
+oracle_sid: xbasttst
+
+fouser: foadm
+fourl: fo001foutv.ddc.teliasonera.net
+
+mimer_path: mimer/MimerSQL-10.1.3A
+tuxedo_path: oratux_home/tuxedo12.2.2.0.0

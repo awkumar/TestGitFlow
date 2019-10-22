@@ -1,0 +1,37 @@
+#!/bin/sh
+
+export FROM_DIR={{DEV_TCN_DIR}}
+export FROM_APP_DIR={{appdir}}
+
+printf "\n\n  Packing from: \n  $FROM_DIR\n\n"
+
+# cleaning out temporary workingdir
+\rm -rf {{tuxtcndom}}/kitdist/*
+mkdir -p {{tuxtcndom}}/kitdist/bin/servers
+mkdir -p {{tuxtcndom}}/kitdist/cfg
+mkdir -p {{tuxtcndom}}/kitdist/bin/datafiler
+mkdir -p {{tuxtcndom}}/kitdist/fml
+mkdir -p {{tuxtcndom}}/kitdist/lib/xpnlib
+mkdir -p {{tuxtcndom}}/kitdist/lib/folib
+mkdir -p {{tuxtcndom}}/kitdist/script
+mkdir -p {{tuxtcndom}}/kitdist/jrep
+cp ${FROM_DIR}/common/fml/*.tbl {{tuxtcndom}}/kitdist/fml
+cp ${FROM_DIR}/sllib/*.so {{tuxtcndom}}/kitdist/lib/xpnlib
+cp -r ${FROM_APP_DIR}/lib/folib/*.so {{tuxtcndom}}/kitdist/lib/folib
+cp ${FROM_DIR}/appdir/cfg/*.cfg {{tuxtcndom}}/kitdist/cfg
+cp ${FROM_DIR}/appdir/datafiler/version.txt {{tuxtcndom}}/kitdist/bin/datafiler
+cp ${FROM_DIR}/appdir/datafiler/*.dat {{tuxtcndom}}/kitdist/bin/datafiler
+cp ${FROM_DIR}/appdir/datafiler/*.rtf {{tuxtcndom}}/kitdist/bin/datafiler
+cp ${FROM_DIR}/appdir/server/* {{tuxtcndom}}/kitdist/bin/servers
+
+#sabba inte dom som finns --cp ${FROM_DIR}/appdir/script/* /opt/xpris/test/kitdist/.
+cp ${FROM_DIR}/appdir/script/lojfstatus01* {{tuxtcndom}}/kitdist/script
+cp ${FROM_DIR}/jrep/* {{tuxtcndom}}/kitdist/jrep
+
+#clean up files that should not be in the tar.
+rm -f  {{tuxtcndom}}/kitdist/cfg/bolag.cfg
+
+tar zcvf {{base_folder}}/release/{{application_version}}/xpntux{{application_version}}.tgz -C {{tuxtcndom}}/kitdist/ .
+echo 
+echo Created file {{base_folder}}/release/{{application_version}}/xpntux{{application_version}}.tgz
+echo 

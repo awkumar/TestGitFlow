@@ -1,0 +1,54 @@
+#!/bin/sh
+DATE=$(date "+%Y%m%d")
+
+
+# Placera vid rooten
+cd {{tuxtcndom}}
+
+# Ta ned systemet
+. {{tuxtcndom}}/setenv > /dev/null 2>&1
+tmshutdown -S
+
+# Kopiera tabellfiler
+mkdir -p appdir/fml
+cp dev/common/fml/*.tbl appdir/fml
+
+# Kopiera servrar
+#cp dev/appdir/server/* appdir/bin
+#Line below just to make sure that no garbage logs and stuff goes to prod.
+mkdir -p appdir/bin/servers
+cp dev/appdir/server/* appdir/bin/servers
+
+~/bin/relink-servers.sh
+
+# Kopiera bibliotek
+mkdir -p appdir/lib/xpnlib
+cp dev/sllib/*.so appdir/lib/xpnlib
+
+# Kopiera config-filer
+cp dev/appdir/config/*.cfg appdir/cfg/
+
+# Kopiera RTF-mallar
+mkdir -p appdir/bin/datafiler
+cp dev/appdir/mallar/*.rtf appdir/bin/datafiler
+
+# Kopiera datafiler
+cp dev/appdir/datafiler/* appdir/bin/datafiler
+
+# Kopiera scriptfiler
+cp dev/appdir/script/*.sql appdir/script
+cp dev/appdir/script/*.sh  appdir/script
+cp dev/appdir/script/* appdir/script
+chmod 755 appdir/script/*.sh
+
+# Kopiera jrepository 
+# Backup jrepostiry first
+cp appdir/jrep/jrepository appdir/jrep/jrepository_${DATE}_AUTO
+cp dev/jrep/* appdir/jrep
+
+\rm appdir/log/*.log
+
+touch {{tuxtcndom}}/dev2appdir.log
+echo `who -m ` `date` >> {{tuxtcndom}}/dev2appdir.log
+
+tmboot -S

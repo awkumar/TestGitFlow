@@ -1,0 +1,2 @@
+- name: Build Tuxedo.
+  shell: "{{DEV_TCN_DIR}}/script/buildMe.sh deploy {{application_version}}"

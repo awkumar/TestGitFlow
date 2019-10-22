@@ -1,0 +1,115 @@
+---
+- name: Create Directories used for todeploy
+  become_user: "{{app_user}}"
+  file: path={{ item.path }} state=directory recurse=true owner={{ app_user }} group={{ app_group }} mode={{ item.mode }}
+  with_items:
+     - { path: '{{ base_folder }}/domains/jboss/todeploy/', mode: '0775' }
+  
+- name: Copy logic EAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/ear/logic.ear dest="{{ base_folder }}/domains/jboss/todeploy/"
+  
+- name: Copy xtasconfigurator war file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/war/xtasconfigurator.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+
+- name: Copy htmljava WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/htmljava/war/htmljava.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+  
+- name: Copy xpris_manuals WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/xpris_manuals/xpris_manuals.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+
+- name: Copy CentrexCache WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/CentrexCache/war/CentrexCache.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+
+- name: Copy smsavisering WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/smsavisering/war/smsavisering.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+  
+- name: Copy TCN war file to host
+  become_user: "{{app_user}}"
+  copy: src="{{item}}" dest="{{ base_folder }}/domains/jboss/todeploy/tcn.war" mode="0755"
+  with_fileglob: "/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Xpn/deploy/tcn*.war"
+  
+- name: Copy inquiry WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/inquiry/war/inquiry.war dest="{{ base_folder }}/domains/jboss/todeploy/"
+  
+- name: Copy userman WAR file to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/usermanager/war/userman.war dest="{{ base_folder }}/domains/jboss/todeploy"
+
+- name: Be sure that jboss is running
+  service: name='wildfly' state='started'
+
+- name: Deploy Logic to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/logic.ear" deployment=logic.ear state=present
+
+- name: Deploy xtasconfigurator to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/xtasconfigurator.war" deployment=xtasconfigurator.war state=present
+  
+- name: Deploy htmljava to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/htmljava.war" deployment=htmljava.war state=present
+
+- name: Deploy xpris_manuals to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/xpris_manuals.war" deployment=xpris_manuals.war state=present
+
+- name: Deploy CentrexCache to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/CentrexCache.war" deployment=CentrexCache.war state=present
+
+- name: Deploy smsavisering to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/smsavisering.war" deployment=smsavisering.war state=present
+
+- name: Deploy TCN to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/tcn.war" deployment=tcn.war state=present
+
+- name: Deploy inquiry to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/inquiry.war" deployment=inquiry.war state=present
+
+- name: Deploy userman to JBoss
+  become_user: "{{app_user}}"
+  jboss: deploy_path={{base_folder}}/domains/jboss/deployments/ src="{{ base_folder }}/domains/jboss/todeploy/userman.war" deployment=userman.war state=present
+    
+- name: Copy releaseinfo files to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/data/releaseinfo dest="{{ base_folder }}/domains/jboss"
+  
+- name: Copy datafiler (TEMPLATE_DOC_ROOT) to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/data/datafiler dest="{{ base_folder }}/domains/jboss"
+
+- name: Copy images files (IMAGE_ROOT) to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/data/images dest="{{ base_folder }}/domains/jboss"
+
+- name: Copy xsd files (XSD_ROOT) to host
+  become_user: "{{app_user}}"
+  copy: src=/opt/xpris/xpris1/jenkins/jobs/{{application_version}}_All_xpris/lastSuccessful/archive/Logic/data/xsd dest="{{ base_folder }}/domains/jboss"
+
+- name: Find files on tmp path with pattern *.war and *.ear
+  find:
+    paths: '{{ base_folder }}/domains/jboss/todeploy/'
+    patterns: '*.war,*.ear'
+  register: files_to_delete
+  when: isProduction == false
+
+- name: Clean tmp path from war and ear files.
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+  when: isProduction == false
+   
+- name: Adding application related scripts to be used in crontab (controlm in production)
+  import_tasks: controlm_scripts.yml
